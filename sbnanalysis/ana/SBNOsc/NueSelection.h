@@ -13,7 +13,11 @@
 #include "canvas/Utilities/InputTag.h"
 #include "core/SelectionBase.hh"
 #include "core/Event.hh"
+#include "lardataobj/MCBase/MCShower.h"
+#include "nusimdata/SimulationBase/MCTruth.h"
+#include "lardataobj/MCBase/MCTrack.h"
 
+//Forward declarations
 class TH2D;
 
 namespace ana {
@@ -49,12 +53,24 @@ public:
 
 protected:
   unsigned fEventCounter;  //!< Count processed events
-  unsigned fNuCount;  //!< Count selected events
+  unsigned fNuCount;  //!< Count num nu_e CCQE events
 
   /** Configuration parameters */
   art::InputTag fTruthTag;  //!< art tag for MCTruth information
 };
+  art::InputTag fTrackTag; //MCTrack
+  art::InputTag fShowerTag;//MCShower
 
+  /**histograms!*/
+  TH2D* fNuVertexXZHist;  //!< Neutrino vertex XZ projection
+  TH2D* fNuVertexXYHist; //nu vertex XY proj
+  TH2D* fNuVertexYZHist; //nu vertex YZ proj
+  TH2D* fTrackXY;
+  TH2D* fTrackYZ;
+  TH2D* fTrackXZ;
+  TH2D* fShowerXY;
+  TH2D* fShowerYZ;
+  TH2D* fShowerXZ;
   }  // namespace SBNOsc
 }  // namespace ana
 
