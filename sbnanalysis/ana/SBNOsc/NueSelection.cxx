@@ -56,7 +56,7 @@ bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Int
   }
 
   bool selected = !reco.empty();
-
+  // if neutrino is nue CCQE
   if (selected) {
     fNuCount++;
   }
