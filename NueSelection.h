@@ -62,15 +62,7 @@ protected:
   art::InputTag fShowerTag;//MCShower
 
   /**histograms!*/
-  TH2D* fNuVertexXZHist;  //!< Neutrino vertex XZ projection
-  TH2D* fNuVertexXYHist; //nu vertex XY proj
-  TH2D* fNuVertexYZHist; //nu vertex YZ proj
-  TH2D* fTrackXY;
-  TH2D* fTrackYZ;
-  TH2D* fTrackXZ;
-  TH2D* fShowerXY;
-  TH2D* fShowerYZ;
-  TH2D* fShowerXZ;
+
   }  // namespace SBNOsc
 }  // namespace ana
 
