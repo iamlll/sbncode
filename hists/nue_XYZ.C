@@ -105,9 +105,9 @@ void nue_XYZ(){
   TLegend* legXY = new TLegend(0.75,0.45,0.95,0.6);
   TLegend* legYZ = new TLegend(0.75,0.45,0.95,0.6);
   TLegend* legXZ = new TLegend(0.75,0.45,0.95,0.6);
-  TCanvas* canv2d = new TCanvas("2dcanv","2dcanv",2400,800);
-  canv2d->Divide(3,1);
-  canv2d->cd(1);
+  TCanvas* nucanv = new TCanvas("nucanv","nucanv",2400,800);
+  nucanv->Divide(3,1);
+  nucanv->cd(1);
   xy->Draw();
   //TPC 0
   DrawRectangle(-199.15,-200,-2.65,200,kBlue);//act vol
@@ -118,14 +118,14 @@ void nue_XYZ(){
   DrawNamedRect(-260.1,-271.15,260.1,271.15,kYellow, "bounding box", legXY);
   legXY->Draw();
 
-  canv2d->cd(2);  
+  nucanv->cd(2);  
   yz->Draw();
   DrawNamedRect(-200,0,200,500,kBlue, "active vol", legYZ);
   DrawNamedRect(-200+25,25,200-25,500-25, kRed, "fiducial vol", legYZ);
   DrawNamedRect(-271.15,-143.1,271.15,559.6,kYellow, "bounding box", legYZ);
   legYZ->Draw();
 
-  canv2d->cd(3);
+  nucanv->cd(3);
   xz->Draw();
   //TPC 0
   DrawNamedRect(-199.15,0,-2.65,500,kBlue, "active vol", legXZ);
@@ -136,6 +136,77 @@ void nue_XYZ(){
   DrawNamedRect(-260.1,-143.1,260.1,559.6,kYellow, "bounding box", legXZ);
   legXZ->Draw();
 
+  TCanvas* trcanv = new TCanvas("trcanv","trcanv",2400,800);
+  trcanv->Divide(3,1);
+  TLegend* legXY_tr = new TLegend(0.75,0.45,0.95,0.6);
+  TLegend* legYZ_tr = new TLegend(0.75,0.45,0.95,0.6);
+  TLegend* legXZ_tr = new TLegend(0.75,0.45,0.95,0.6);
   TH2D* trackXY = (TH2D*)nue->Get("trackXY"); 
+  TH2D* trackYZ = (TH2D*)nue->Get("trackYZ");
+  TH2D* trackXZ = (TH2D*)nue->Get("trackXZ");
+  trcanv->cd(1);
+  trackXY->Draw();
+  //TPC 0
+  DrawRectangle(-199.15,-200,-2.65,200,kBlue);//act vol
+  DrawRectangle(-199.15+25,-200+25,-2.65-25,200-25, kRed);//fid vol
+  //TPC 1
+  DrawNamedRect(2.65,-200,199.15,200,kBlue, "active vol", legXY_tr);
+  DrawNamedRect(2.65+25,-200+25,199.15-25,200-25, kRed, "fiducial vol", legXY_tr);
+  DrawNamedRect(-260.1,-271.15,260.1,271.15,kYellow, "bounding box", legXY_tr);
+  legXY_tr->Draw();
 
+  trcanv->cd(2);
+  trackYZ->Draw();
+  DrawNamedRect(-200,0,200,500,kBlue, "active vol", legYZ_tr);
+  DrawNamedRect(-200+25,25,200-25,500-25, kRed, "fiducial vol", legYZ_tr);
+  DrawNamedRect(-271.15,-143.1,271.15,559.6,kYellow, "bounding box", legYZ_tr);
+  legYZ_tr->Draw();
+  
+  trcanv->cd(3);
+  trackXZ->Draw();
+  //TPC 0
+  DrawNamedRect(-199.15,0,-2.65,500,kBlue, "active vol", legXZ_tr);
+  DrawNamedRect(-199.15+25,25,-2.65-25,500-25, kRed, "fiducial vol", legXZ_tr);
+  //TPC 1
+  DrawRectangle(2.65,0,199.15,500,kBlue);
+  DrawRectangle(2.65+25,25,199.15-25,500-25, kRed);
+  DrawNamedRect(-260.1,-143.1,260.1,559.6,kYellow, "bounding box", legXZ_tr);
+  legXZ_tr->Draw();
+        
+  TCanvas* shcanv = new TCanvas("shcanv","shcanv",2400,800);
+  shcanv->Divide(3,1);
+  TLegend* legXY_sh = new TLegend(0.75,0.45,0.95,0.6);
+  TLegend* legYZ_sh = new TLegend(0.75,0.45,0.95,0.6);
+  TLegend* legXZ_sh = new TLegend(0.75,0.45,0.95,0.6);
+  TH2D* showerXY = (TH2D*)nue->Get("showerXY"); 
+  TH2D* showerYZ = (TH2D*)nue->Get("showerYZ");
+  TH2D* showerXZ = (TH2D*)nue->Get("showerXZ");
+  shcanv->cd(1);
+  showerXY->Draw();
+  //TPC 0
+  DrawRectangle(-199.15,-200,-2.65,200,kBlue);//act vol
+  DrawRectangle(-199.15+25,-200+25,-2.65-25,200-25, kRed);//fid vol
+  //TPC 1
+  DrawNamedRect(2.65,-200,199.15,200,kBlue, "active vol", legXY_sh);
+  DrawNamedRect(2.65+25,-200+25,199.15-25,200-25, kRed, "fiducial vol", legXY_sh);
+  DrawNamedRect(-260.1,-271.15,260.1,271.15,kYellow, "bounding box", legXY_sh);
+  legXY_sh->Draw();
+
+  shcanv->cd(2);
+  showerYZ->Draw();
+  DrawNamedRect(-200,0,200,500,kBlue, "active vol", legYZ_sh);
+  DrawNamedRect(-200+25,25,200-25,500-25, kRed, "fiducial vol", legYZ_sh);
+  DrawNamedRect(-271.15,-143.1,271.15,559.6,kYellow, "bounding box", legYZ_sh);
+  legYZ_sh->Draw();
+  
+  shcanv->cd(3);
+  showerXZ->Draw();
+  //TPC 0
+  DrawNamedRect(-199.15,0,-2.65,500,kBlue, "active vol", legXZ_sh);
+  DrawNamedRect(-199.15+25,25,-2.65-25,500-25, kRed, "fiducial vol", legXZ_sh);
+  //TPC 1
+  DrawRectangle(2.65,0,199.15,500,kBlue);
+  DrawRectangle(2.65+25,25,199.15-25,500-25, kRed);
+  DrawNamedRect(-260.1,-143.1,260.1,559.6,kYellow, "bounding box", legXZ_sh);
+  legXZ_sh->Draw();
 }
