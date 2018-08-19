@@ -16,9 +16,12 @@
 #include "lardataobj/MCBase/MCShower.h"
 #include "nusimdata/SimulationBase/MCTruth.h"
 #include "lardataobj/MCBase/MCTrack.h"
+#include <random>
 
 //Forward declarations
 class TH2D;
+class TH1D;
+class THStack;
 
 namespace ana {
   namespace SBNOsc {
@@ -55,6 +58,7 @@ protected:
   unsigned fEventCounter;  //!< Count processed events
   unsigned fNuCount;  //!< Count num nu_e CCQE events
 
+  std::mt19937 rng;
   /** Configuration parameters */
   art::InputTag fTruthTag;  //!< art tag for MCTruth information
 };
@@ -62,6 +66,19 @@ protected:
   art::InputTag fShowerTag;//MCShower
 
   /**histograms!*/
+  std::vector<TH1D*> prelimCuts;
+  THStack* prelim_stack_nue;
+
+  TH1D* dist_from_vertex;
+  std::vector<TH1D*> vertexDist_truth;
+  THStack* truthVD_stack;
+  std::vector<TH1D*> vertexDist_reco;
+  THStack* recoVD_stack;
+
+  TH2D* nuE_vs_reco;
+
+  std::vector<TH1D*> showerE;
+  THStack* showerE_stack;
 
   }  // namespace SBNOsc
 }  // namespace ana
