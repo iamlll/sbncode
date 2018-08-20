@@ -7,6 +7,7 @@
 #include "gallery/ValidHandle.h"
 #include "canvas/Utilities/InputTag.h"
 #include "nusimdata/SimulationBase/MCTruth.h"
+#include "nusimdata/SimulationBase/MCFlux.h"
 #include "nusimdata/SimulationBase/MCNeutrino.h"
 #include "core/Event.hh"
 #include "NueSelection.h"
@@ -195,10 +196,8 @@ std::vector<sim::MCShower> FindRelevantShowers(TLorentzVector nuVertex, std::vec
       auto const& mcshower = mcshowers.at(s);
       if(FindDistance(mcshower.Start().Position(),nuVertex)<=5){
         //shower associated with neutrino interaction
-        showerE[0]->Fill(mcshower.Start().E(),1); 
         relShowers.push_back(mcshower);
       }
-      else showerE[1]->Fill(mcshower.Start().E(),1);
     }
     return relShowers;
   }
@@ -209,11 +208,11 @@ void PrelimCuts_nue(double nuenergy, TLorentzVector nuVertex, int nuPdg, int ccn
   //# interactions in fiducial volume
   if(AnybodyHome_SBND(nuVertex)==true){
     prelimCuts[1]->Fill(nuenergy,1); 
-    //# true nu_e CC  
+    //# true nu_e CC 
     if(nuPdg==12 && ccnc==0){
       prelimCuts[2]->Fill(nuenergy,1);
       //# nu_e CC interactions with a matched shower, E_shower > 200 MeV
-      //if the nu_e interaction has at least one matched shower  
+      //if the nu_e interaction has at least one matched shower
       int nMatched = 0;
       int primE = 0;
       for(size_t s=0; s<mcshowers.size();s++){
@@ -221,9 +220,7 @@ void PrelimCuts_nue(double nuenergy, TLorentzVector nuVertex, int nuPdg, int ccn
         if(FindDistance(nuVertex,mcshower.Start().Position()) <= 5){
           if(mcshower.Start().E() >= 200){  
             nMatched++;
-            //efficiency: what fraction of nu_e CC events are accurately defined
-            //by my definition of a "signal event" (have a shower w/in 5
-            //cm, energy above 200 MeV)?    
+            //efficiency: what fraction of nu_e CC events are accurately defined by my definition of a "signal event" (have a shower w/in 5 cm, energy above 200 MeV)?    
             if(nMatched == 1){ 
               prelimCuts[3]->Fill(nuenergy,1);
             }
@@ -245,7 +242,8 @@ void DistFromNuVertex(TLorentzVector nuVertex, int nuPdg, int ccnc, std::vector<
     auto mctrack = mctracks.at(a);
     auto dist = FindDistance(mctrack.Start().Position(), nuVertex);
     dist_from_vertex->Fill(dist, 1);
-    //if(mctrack.PdgCode()==2212) std::cout << "Proton process: " << mctrack.Process() << std::endl;
+    if(mctrack.Origin()==simb::kCosmicRay) vertexDist_truth[2]->Fill(dist,1);
+    std::cout << "Track origin: " << mctrack.Origin() << std::endl;
   }
 
   for(size_t b=0; b<mcshowers.size();b++){
@@ -258,9 +256,8 @@ void DistFromNuVertex(TLorentzVector nuVertex, int nuPdg, int ccnc, std::vector<
     if(mcshower.PdgCode()==22){
       vertexDist_truth[1]->Fill(dist,1); //gamma showers
     }
-    if(mcshower.PdgCode()!=22 && (mcshower.PdgCode()==2212 || mcshower.PdgCode()==11) && mcshower.Process()!="primary"){
-      vertexDist_truth[2]->Fill(dist,1); //cosmic rays = everything else
-    }
+    if(mcshower.Origin()==simb::kCosmicRay) vertexDist_truth[2]->Fill(dist,1);
+    std::cout << "Shower origin: " << mcshower.Origin() << std::endl;
   }
 }
 
@@ -302,6 +299,7 @@ bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Int
   // Grab a data product from the event
   auto const& mctruths = \
     *ev.getValidHandle<std::vector<simb::MCTruth> >(fTruthTag);
+  auto const& mcfluxes = *ev.getValidHandle<std::vector<simb::MCFlux>>(fTruthTag);
   auto const& mctracks = \
     *ev.getValidHandle<std::vector<sim::MCTrack>>(fTrackTag);
   auto const& mcshowers = \
@@ -325,6 +323,7 @@ bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Int
     PrelimCuts_nue(nuenergy, nuVertex, nuPdg, ccnc, mcshowers, mctracks, nuE_vs_reco, prelimCuts);    
     DistFromNuVertex(nuVertex, nuPdg, ccnc, mcshowers, mctracks, dist_from_vertex, vertexDist_truth);
     NuE_vs_RecoE(nuenergy, nuVertex, mcshowers, mctracks);  
+
   }
 
   bool selected = !reco.empty();

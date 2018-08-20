@@ -65,6 +65,8 @@ protected:
   art::InputTag fTrackTag; //MCTrack
   art::InputTag fShowerTag;//MCShower
 
+  /** vectors **/
+
   /**histograms!*/
   std::vector<TH1D*> prelimCuts;
   THStack* prelim_stack_nue;
