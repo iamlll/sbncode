@@ -66,6 +66,9 @@ protected:
   art::InputTag fShowerTag;//MCShower
 
   /** vectors **/
+  std::vector<sim::MCTrack> fRelTracks; //MCTracks within 5 cm of neutrino interaction vertex
+  std::vector<sim::MCShower> fRelShowers; //MCShowers within 5 cm of neutrino interaction vertex
+  std::vector<int>  fCodes;
 
   /**histograms!*/
   std::vector<TH1D*> prelimCuts;
@@ -78,7 +81,8 @@ protected:
   THStack* recoVD_stack;
 
   TH2D* nuE_vs_reco;
-
+  std::vector<TH2D*> nuereco_type;
+  THStack* nuereco_stack;
   std::vector<TH1D*> showerE;
   THStack* showerE_stack;
 

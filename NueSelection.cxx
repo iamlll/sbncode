@@ -104,6 +104,25 @@ void WriteHists(std::vector<TH1D*> vec, THStack* stack){
   stack->Write();
 }
 
+std::vector<TH2D*> Initialize2DHists(int nbinsx, double lowX, double highX, int nbinsy, double lowY, double highY, int size, std::string baseTitle, std::mt19937 rng){
+   std::vector<TH2D*> hists;
+   char buffer[20];
+   for(int i=0;i<size;i++){
+      char* cstr = new char [baseTitle.length()+1];
+      std::strcpy (cstr, baseTitle.c_str());
+      std::sprintf(buffer, "%s%d", cstr, i); //in this case, using i to denote 1 (true = events that passed the cut) vs 0 (false)
+      hists.push_back(new TH2D(buffer,"",nbinsx,lowX,highX, nbinsy, lowY, highY));
+   }
+   return hists;
+}
+
+void Write2DHists(std::vector<TH2D*> vec, THStack* stack){
+  for(size_t i=0; i< vec.size(); i++){
+    stack->Add(vec[i]);
+  }
+  stack->Write();
+}
+
 void NueSelection::Initialize(Json::Value* config) {
   rng.seed(std::random_device()());
 
@@ -129,6 +148,8 @@ void NueSelection::Initialize(Json::Value* config) {
   recoVD_stack = new THStack("recoVD_stack","dist.from #nu vertex;dist(cm);count");
 
   nuE_vs_reco = new TH2D("nuE_vs_reco","truth v. reco E_#nu;E_#nu (GeV);Reconstructed E_#nu (GeV)", 30, 0,5,30,0,5); 
+  nuereco_type = Initialize2DHists(24,0,4,24,0,4,3, "interaction type", rng);
+  nuereco_stack = new THStack("nuereco_stack","truth v. reco E_#nu;E_#nu (GeV);Reconstructed E_#nu (GeV)");
 
   showerE = InitializeHists(60,0,1000,2,"assn",rng,false);
   showerE_stack = new THStack("showerE_stack","Shower energies + #nu assns.;E_shower (MeV);count");
@@ -189,6 +210,19 @@ double FindRecoEnergy_numu(sim::MCTrack mctrack){
   return reco_energy;
 }
 
+std::vector<sim::MCTrack> FindRelevantTracks(TLorentzVector nuVertex, std::vector<sim::MCTrack> mctracks){
+  std::vector<sim::MCTrack> relTracks;
+  //iterate through only each neutrino's "associated" tracks + showers (within 5 cm of neutrino interaction vertex)
+  //(we're cheating - it's okay)
+  for(size_t r=0;r<mctracks.size();r++){
+    auto const& mctrack = mctracks.at(r);
+    if(FindDistance(mctrack.Start().Position(),nuVertex)<=5){
+      relTracks.push_back(mctrack);
+    }
+  }
+  return relTracks;
+}
+
 std::vector<sim::MCShower> FindRelevantShowers(TLorentzVector nuVertex, std::vector<sim::MCShower> mcshowers){
   std::vector<sim::MCShower> relShowers;
   //iterate through only each neutrino's "associated" tracks + showers (within 5 cm of neutrino interaction vertex)
@@ -202,7 +236,11 @@ std::vector<sim::MCShower> FindRelevantShowers(TLorentzVector nuVertex, std::vec
     return relShowers;
   }
 
-void PrelimCuts_nue(double nuenergy, TLorentzVector nuVertex, int nuPdg, int ccnc, std::vector<sim::MCShower> mcshowers, std::vector<sim::MCTrack> mctracks, TH2D* nuE_vs_reco, std::vector<TH1D*> prelimCuts){
+void PrelimCuts_nue(simb::MCNeutrino nu, std::vector<sim::MCShower> mcshowers, std::vector<sim::MCTrack> mctracks, std::vector<TH1D*> prelimCuts){
+  auto nuenergy = nu.Nu().E();
+  auto nuVertex = nu.Nu().EndPosition();
+  auto nuPdg = nu.Nu().PdgCode();
+  auto ccnc = nu.CCNC();
   //make a table!
   prelimCuts[0]->Fill(nuenergy,1); //total interactions generated
   //# interactions in fiducial volume
@@ -237,10 +275,11 @@ void PrelimCuts_nue(double nuenergy, TLorentzVector nuVertex, int nuPdg, int ccn
   }
 }
 
-void DistFromNuVertex(TLorentzVector nuVertex, int nuPdg, int ccnc, std::vector<sim::MCShower> mcshowers, std::vector<sim::MCTrack> mctracks, TH1D* dist_from_vertex, std::vector<TH1D*> vertexDist_truth){
+void DistFromNuVertex(simb::MCNeutrino nu, std::vector<sim::MCShower> mcshowers, std::vector<sim::MCTrack> mctracks, TH1D* dist_from_vertex, std::vector<TH1D*> vertexDist_truth){
+  
   for(size_t a=0; a<mctracks.size();a++){
     auto mctrack = mctracks.at(a);
-    auto dist = FindDistance(mctrack.Start().Position(), nuVertex);
+    auto dist = FindDistance(mctrack.Start().Position(), nu.Nu().EndPosition());
     dist_from_vertex->Fill(dist, 1);
     if(mctrack.Origin()==simb::kCosmicRay) vertexDist_truth[2]->Fill(dist,1);
     std::cout << "Track origin: " << mctrack.Origin() << std::endl;
@@ -248,9 +287,9 @@ void DistFromNuVertex(TLorentzVector nuVertex, int nuPdg, int ccnc, std::vector<
 
   for(size_t b=0; b<mcshowers.size();b++){
     auto mcshower = mcshowers.at(b);
-    auto dist = FindDistance(mcshower.Start().Position(), nuVertex);
+    auto dist = FindDistance(mcshower.Start().Position(), nu.Nu().EndPosition());
     dist_from_vertex->Fill(dist, 1);
-    if(nuPdg==12 && ccnc==0 && mcshower.PdgCode()==11 && mcshower.Process()=="primary"){
+    if(nu.Nu().PdgCode()==12 && nu.CCNC()==0 && mcshower.PdgCode()==11 && mcshower.Process()=="primary"){
       vertexDist_truth[0]->Fill(dist,1); //true nu_e CCNC
     }
     if(mcshower.PdgCode()==22){
@@ -261,21 +300,53 @@ void DistFromNuVertex(TLorentzVector nuVertex, int nuPdg, int ccnc, std::vector<
   }
 }
 
-void NuE_vs_RecoE(double nuenergy, TLorentzVector nuVertex, std::vector<sim::MCShower> mcshowers, std::vector<sim::MCTrack> mctracks){
-  for(size_t a=0; a<mctracks.size();a++){
-    auto mctrack = mctracks.at(a);
-    if(mctrack.PdgCode()==13){
-      auto reco = FindRecoEnergy_numu(mctrack);
-      nuE_vs_reco->Fill(nuenergy, reco, 1);
+/**
+ * Return vector containing unique codes of all types of neutrino interactions
+ */
+void UniqueNuTypes(std::vector<int> codes, simb::MCNeutrino nu){
+  auto type = nu.InteractionType();
+  //create vector of unique interaction type codes
+  if(codes.empty()){
+    codes.push_back(type);
+  }
+  else{
+    if(find(codes.begin(),codes.end(),type)==codes.end()){
+      codes.push_back(type);
     }
   }
+}
 
-  for(size_t b=0; b<mcshowers.size();b++){
-    auto mcshower = mcshowers.at(b);
+void NuE_vs_RecoE(simb::MCNeutrino nu, std::vector<sim::MCShower> fRelShowers, std::vector<sim::MCTrack> fRelTracks){
+  for(size_t a=0; a<fRelTracks.size();a++){
+    auto mctrack = fRelTracks.at(a);
+    auto reco = FindRecoEnergy_numu(mctrack);
+    nuE_vs_reco->Fill(nu.Nu().E(), reco, 1); 
+    //CCQE
+    if(nu.CCNC()==0 && nu.Mode()==0) nuereco_type[0]->Fill(nu.Nu().E(), reco, 1);
+    //resonance
+    else if(nu.Mode()==1) nuereco_type[1]->Fill(nu.Nu().E(), reco, 1);
+    //deep inelastic scattering
+    else if(nu.Mode()==2) nuereco_type[2]->Fill(nu.Nu().E(), reco, 1);
+    //coherent scattering
+    else if(nu.Mode()==3) nuereco_type[3]->Fill(nu.Nu().E(), reco, 1);
+    
+  }
+
+  for(size_t b=0; b<fRelShowers.size();b++){
+    auto mcshower = fRelShowers.at(b);
+    auto reco = FindRecoEnergy_nue(mcshower);
     if(mcshower.PdgCode()==11){
-      auto reco = FindRecoEnergy_nue(mcshower);
-      nuE_vs_reco->Fill(nuenergy, reco, 1);
+      nuE_vs_reco->Fill(nu.Nu().E(), reco, 1);
     }
+    //CCQE
+    if(nu.CCNC()==0 && nu.Mode()==0) nuereco_type[0]->Fill(nu.Nu().E(), reco, 1);
+    //resonance
+    else if(nu.Mode()==1) nuereco_type[1]->Fill(nu.Nu().E(), reco, 1);
+    //deep inelastic scattering
+    else if(nu.Mode()==2) nuereco_type[2]->Fill(nu.Nu().E(), reco, 1);
+    //coherent scattering
+    else if(nu.Mode()==3) nuereco_type[3]->Fill(nu.Nu().E(), reco, 1);
+    
   }
 }
 
@@ -285,7 +356,12 @@ void NueSelection::Finalize() {
   dist_from_vertex->Write();
   WriteHists(vertexDist_truth, truthVD_stack);
   nuE_vs_reco->Write();
+  Write2DHists(nuereco_type, nuereco_stack);
   WriteHists(showerE, showerE_stack); 
+  std::cout << "Neutrino interaction types: " << std::endl;
+  for(int i=0; i<fCodes.size(); i++){
+    std::cout << fCodes[i] << std::endl;
+  }
 }
 
 bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Interaction>& reco) {
@@ -314,16 +390,17 @@ bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Int
     auto nuVertex = nu.Nu().EndPosition();
     auto nuPdg = nu.Nu().PdgCode();
     auto ccnc = nu.CCNC();
-    if (ccnc == simb::kCC && nu.Mode() == 0 && nuPdg == 12) {
+    if (nu.CCNC() == simb::kCC && nu.Mode() == 0 && nu.Nu().PdgCode() == 12) {
       Event::Interaction interaction = TruthReco(mctruth);
       reco.push_back(interaction);
     }
 
-    FindRelevantShowers(nuVertex, mcshowers);
-    PrelimCuts_nue(nuenergy, nuVertex, nuPdg, ccnc, mcshowers, mctracks, nuE_vs_reco, prelimCuts);    
-    DistFromNuVertex(nuVertex, nuPdg, ccnc, mcshowers, mctracks, dist_from_vertex, vertexDist_truth);
-    NuE_vs_RecoE(nuenergy, nuVertex, mcshowers, mctracks);  
-
+    fRelShowers = FindRelevantShowers(nuVertex, mcshowers);
+    fRelTracks = FindRelevantTracks(nuVertex, mctracks);
+    PrelimCuts_nue(nu, mcshowers, mctracks, prelimCuts);    
+    DistFromNuVertex(nu,mcshowers, mctracks, dist_from_vertex, vertexDist_truth);
+    NuE_vs_RecoE(nu, fRelShowers, fRelTracks);  
+    UniqueNuTypes(fCodes, nu);
   }
 
   bool selected = !reco.empty();

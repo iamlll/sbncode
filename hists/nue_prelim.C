@@ -51,6 +51,7 @@ void nue_prelim(){
 
   THStack* shAssns = (THStack*)nue->Get("showerE_stack");
   TH2D* nue_vs_reco = (TH2D*)nue->Get("nuE_vs_reco");
+  THStack* nuereco_type_stack = (THStack*)nue->Get("nuereco_stack"); 
   THStack* prelimCuts = (THStack*)nue->Get("prelim_stack_nue");
   TH1D* dist_from_vertex = (TH1D*)nue->Get("dist_from_vertex");
   THStack* vertexDist_truth = (THStack*)nue->Get("truthVD_stack");
@@ -73,6 +74,18 @@ void nue_prelim(){
   vertexDist_truth->Draw();
   CreateNamedLegend("",vertexDist_truth,{"true #nu_e CC tr+sh","photon showers","cosmic rays"},false)->Draw();
 
-  TCanvas *energycanv = new TCanvas("energycanv","energycanv",1000,1000);
+  TCanvas *energycanv = new TCanvas("energycanv","energycanv",800,800);
   nue_vs_reco->Draw();
+
+  TCanvas *nutypecanv = new TCanvas("nutypecanv","nutypecanv",800,800);
+  nutypecanv->Divide(3,2);
+  int count = 0;
+  for(auto hist : nuereco_type_stack.GetHists()){
+    TLegend* leg = new TLegend(0.75,0.45,0.95,0.6);
+    nutypecanv->cd(count);
+    hist->Draw("colz");
+    if(count==0)leg->AddEntry(hist, "CCQE", "f");
+    leg->Draw(); 
+    count++;
+  }
 }
