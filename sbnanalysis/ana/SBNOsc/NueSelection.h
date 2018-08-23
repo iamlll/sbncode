@@ -57,6 +57,7 @@ public:
 protected:
   unsigned fEventCounter;  //!< Count processed events
   unsigned fNuCount;  //!< Count num nu_e CCQE events
+  unsigned fTotTracksShowers; //counts total num tracks and showers
 
   std::mt19937 rng;
   /** Configuration parameters */

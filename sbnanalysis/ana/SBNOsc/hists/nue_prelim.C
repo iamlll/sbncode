@@ -47,7 +47,8 @@ TLegend* CreateNamedLegend(string legTitle, THStack* stack, vector<string> title
 }  
 
 void nue_prelim(){
-  TFile* nue = new TFile("output.root");
+  //TFile* nue = new TFile("output_SBNOsc_NueSelection.root");
+  TFile* nue = new TFile("prelimoutput.root");
 
   THStack* shAssns = (THStack*)nue->Get("showerE_stack");
   TH2D* nue_vs_reco = (TH2D*)nue->Get("nuE_vs_reco");
@@ -65,7 +66,7 @@ void nue_prelim(){
   TCanvas* pcanv = new TCanvas("pcanv","pcanv",1000,1000);
   prelimCuts->Draw("nostack");  
   CreateNamedLegend("",prelimCuts,{"Total #nu interactions","Interactions in fid vol","true #nu_e CC interactions","#nu_e CC matched w/ shower","matched #nu_e CC w/ prim. e- shower"},false)->Draw();
-
+  
   TCanvas* distcanv = new TCanvas("distcanv","distcanv",1500,750);
   distcanv->Divide(2,1);
   distcanv->cd(1);
@@ -73,19 +74,30 @@ void nue_prelim(){
   distcanv->cd(2);
   vertexDist_truth->Draw();
   CreateNamedLegend("",vertexDist_truth,{"true #nu_e CC tr+sh","photon showers","cosmic rays"},false)->Draw();
-
+  
   TCanvas *energycanv = new TCanvas("energycanv","energycanv",800,800);
+  nue_vs_reco->SetBins(60,0,10,60,0,10);
   nue_vs_reco->Draw();
-
-  TCanvas *nutypecanv = new TCanvas("nutypecanv","nutypecanv",800,800);
-  nutypecanv->Divide(3,2);
-  int count = 0;
-  for(auto hist : nuereco_type_stack.GetHists()){
-    TLegend* leg = new TLegend(0.75,0.45,0.95,0.6);
+  
+  TCanvas *nutypecanv = new TCanvas("nutypecanv","nutypecanv",1800,1350);
+  nutypecanv->Divide(4,3);
+  int count = 1;
+  for(auto obj : *nuereco_type_stack->GetHists()){
+    TH1D* hist = (TH1D*) obj;
     nutypecanv->cd(count);
-    hist->Draw("colz");
-    if(count==0)leg->AddEntry(hist, "CCQE", "f");
-    leg->Draw(); 
+    hist->Draw();
+    hist->SetBins(60,0,10, 42,0,7);
+    //hist->SetBins(30,0,5,30,0,5);
+    if(count==1)hist->SetName("CCQE");
+    if(count==2)hist->SetName("NCQE");
+    if(count==3)hist->SetName("CCRes");
+    if(count==4)hist->SetName("NCRes");
+    if(count==5)hist->SetName("CCDIS");
+    if(count==6)hist->SetName("NCDIS");
+    if(count==7)hist->SetName("CCCoh");
+    if(count==8)hist->SetName("NCCoh");
+    if(count==9)hist->SetName("nu e- elastic scattering");
+    if(count==10)hist->SetName("MEC");
     count++;
   }
 }

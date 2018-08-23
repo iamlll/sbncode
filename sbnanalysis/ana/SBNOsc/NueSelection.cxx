@@ -20,6 +20,7 @@
 #include <TLorentzVector.h>
 #include "TVector3.h"
 #include <random>
+#include <fstream>
 
 namespace ana {
   namespace SBNOsc {
@@ -142,13 +143,13 @@ void NueSelection::Initialize(Json::Value* config) {
   prelim_stack_nue = new THStack("prelim_stack_nue",";E_#nu (GeV);count");
 
   dist_from_vertex = new TH1D("dist_from_vertex","Shower/track dist. from #nu vertex;Distance (cm);count",60,0,10);
-  vertexDist_truth = InitializeHists(60,0,10,3,"nuegc",rng,true);
+  vertexDist_truth = InitializeHists(25,0,20,3,"nuegc",rng,true);
   truthVD_stack = new THStack("truthVD_stack","dist. from #nu vertex;dist(cm);count");
   vertexDist_reco = InitializeHists(60,0,10,2,"nuegc_reco",rng,false);
   recoVD_stack = new THStack("recoVD_stack","dist.from #nu vertex;dist(cm);count");
 
   nuE_vs_reco = new TH2D("nuE_vs_reco","truth v. reco E_#nu;E_#nu (GeV);Reconstructed E_#nu (GeV)", 30, 0,5,30,0,5); 
-  nuereco_type = Initialize2DHists(24,0,4,24,0,4,3, "interaction type", rng);
+  nuereco_type = Initialize2DHists(30,0,5,60,0,10,10, "interaction type", rng);
   nuereco_stack = new THStack("nuereco_stack","truth v. reco E_#nu;E_#nu (GeV);Reconstructed E_#nu (GeV)");
 
   showerE = InitializeHists(60,0,1000,2,"assn",rng,false);
@@ -179,7 +180,7 @@ double FindRecoEnergy_nue(sim::MCShower mcshower){
   auto E_l = mcshower.Start().E(); //lepton energy, in MeV
   auto p_l = mcshower.Start().Momentum().Vect().Mag(); //lep momentum, MeV/c
   auto theta_l = mcshower.Start().Position().Vect().Theta(); //azimuthal angle b/w prod lepton + neutrino (z-axis)
-  auto reco_energy = 0.5*(TMath::Power(m_p,2)-TMath::Power(m_n-E_b,2)-TMath::Power(m_l,2)+2*(m_n-E_b)*E_l)/(m_n-E_l+p_l*TMath::Cos(theta_l));
+  auto reco_energy = 0.5*(TMath::Power(m_p,2)-TMath::Power(m_n-E_b,2)-TMath::Power(m_l,2)+2*(m_n-E_b)*E_l)/(m_n-E_b-E_l+p_l*TMath::Cos(theta_l));
   reco_energy /= 1000; //convert from MeV to GeV
   return reco_energy;
 }
@@ -192,7 +193,7 @@ double FindRecoEnergy_nue(sim::MCTrack mctrack){
   auto E_l = mctrack.Start().E(); //lepton energy, in MeV
   auto p_l = mctrack.Start().Momentum().Vect().Mag(); //lep momentum, MeV
   auto theta_l = mctrack.Start().Position().Vect().Theta(); //azimuthal angle b/w prod lepton + neutrino (z-axis)
-  auto reco_energy = 0.5*(TMath::Power(m_p,2)-TMath::Power(m_n-E_b,2)-TMath::Power(m_l,2)+2*(m_n-E_b)*E_l)/(m_n-E_l+p_l*TMath::Cos(theta_l));
+  auto reco_energy = 0.5*(TMath::Power(m_p,2)-TMath::Power(m_n-E_b,2)-TMath::Power(m_l,2)+2*(m_n-E_b)*E_l)/(m_n-E_b-E_l+p_l*TMath::Cos(theta_l));
   reco_energy /= 1000; //convert from MeV to GeV
   return reco_energy;
 }
@@ -205,7 +206,7 @@ double FindRecoEnergy_numu(sim::MCTrack mctrack){
   auto E_l = mctrack.Start().E(); //lepton energy, in MeV
   auto p_l = mctrack.Start().Momentum().Vect().Mag(); //lep momentum, MeV
   auto theta_l = mctrack.Start().Position().Vect().Theta(); //azimuthal angle b/w prod lepton + neutrino (z-axis)
-  auto reco_energy = 0.5*(TMath::Power(m_p,2)-TMath::Power(m_n-E_b,2)-TMath::Power(m_l,2)+2*(m_n-E_b)*E_l)/(m_n-E_l+p_l*TMath::Cos(theta_l));
+  auto reco_energy = 0.5*(TMath::Power(m_p,2)-TMath::Power(m_n-E_b,2)-TMath::Power(m_l,2)+2*(m_n-E_b)*E_l)/(m_n-E_b-E_l+p_l*TMath::Cos(theta_l));
   reco_energy /= 1000;
   return reco_energy;
 }
@@ -230,8 +231,10 @@ std::vector<sim::MCShower> FindRelevantShowers(TLorentzVector nuVertex, std::vec
       auto const& mcshower = mcshowers.at(s);
       if(FindDistance(mcshower.Start().Position(),nuVertex)<=5){
         //shower associated with neutrino interaction
+        showerE[0]->Fill(mcshower.Start().E(), 1);
         relShowers.push_back(mcshower);
       }
+      else showerE[1]->Fill(mcshower.Start().E(),1);
     }
     return relShowers;
   }
@@ -280,31 +283,37 @@ void DistFromNuVertex(simb::MCNeutrino nu, std::vector<sim::MCShower> mcshowers,
   for(size_t a=0; a<mctracks.size();a++){
     auto mctrack = mctracks.at(a);
     auto dist = FindDistance(mctrack.Start().Position(), nu.Nu().EndPosition());
-    dist_from_vertex->Fill(dist, 1);
-    if(mctrack.Origin()==simb::kCosmicRay) vertexDist_truth[2]->Fill(dist,1);
-    std::cout << "Track origin: " << mctrack.Origin() << std::endl;
+    if(dist <= 20){
+      dist_from_vertex->Fill(dist, 1);
+      if(mctrack.Origin()==simb::kCosmicRay){
+        vertexDist_truth[2]->Fill(dist,1);
+      }
+    }
   }
 
   for(size_t b=0; b<mcshowers.size();b++){
     auto mcshower = mcshowers.at(b);
     auto dist = FindDistance(mcshower.Start().Position(), nu.Nu().EndPosition());
-    dist_from_vertex->Fill(dist, 1);
-    if(nu.Nu().PdgCode()==12 && nu.CCNC()==0 && mcshower.PdgCode()==11 && mcshower.Process()=="primary"){
-      vertexDist_truth[0]->Fill(dist,1); //true nu_e CCNC
+    if(dist <= 20){
+      dist_from_vertex->Fill(dist, 1);
+      if(nu.Nu().PdgCode()==12 && nu.CCNC()==0 && mcshower.PdgCode()==11 && mcshower.Process()=="primary"){
+        vertexDist_truth[0]->Fill(dist,1); //true nu_e CCNC
+      }
+      if(mcshower.PdgCode()==22){
+        vertexDist_truth[1]->Fill(dist,1); //photons travel some distance away from neutrino vertex; distance has exponential distribution whose characteristic length is radiation length of the medium. For LAr, this characteristic length = 14 cm.
+      }
+      if(mcshower.Origin()==simb::kCosmicRay){
+        vertexDist_truth[2]->Fill(dist,1);
+      }
     }
-    if(mcshower.PdgCode()==22){
-      vertexDist_truth[1]->Fill(dist,1); //gamma showers
-    }
-    if(mcshower.Origin()==simb::kCosmicRay) vertexDist_truth[2]->Fill(dist,1);
-    std::cout << "Shower origin: " << mcshower.Origin() << std::endl;
   }
 }
 
 /**
  * Return vector containing unique codes of all types of neutrino interactions
  */
-void UniqueNuTypes(std::vector<int> codes, simb::MCNeutrino nu){
-  auto type = nu.InteractionType();
+std::vector<int> UniqueNuTypes(std::vector<int> codes, simb::MCNeutrino nu){
+  auto type = nu.Mode();
   //create vector of unique interaction type codes
   if(codes.empty()){
     codes.push_back(type);
@@ -314,39 +323,53 @@ void UniqueNuTypes(std::vector<int> codes, simb::MCNeutrino nu){
       codes.push_back(type);
     }
   }
+  return codes;
 }
 
 void NuE_vs_RecoE(simb::MCNeutrino nu, std::vector<sim::MCShower> fRelShowers, std::vector<sim::MCTrack> fRelTracks){
   for(size_t a=0; a<fRelTracks.size();a++){
     auto mctrack = fRelTracks.at(a);
-    auto reco = FindRecoEnergy_numu(mctrack);
+    auto reco = FindRecoEnergy_nue(mctrack);
     nuE_vs_reco->Fill(nu.Nu().E(), reco, 1); 
     //CCQE
     if(nu.CCNC()==0 && nu.Mode()==0) nuereco_type[0]->Fill(nu.Nu().E(), reco, 1);
+    //NCQE
+    else if(nu.CCNC()==1 && nu.Mode()==0) nuereco_type[1]->Fill(nu.Nu().E(), reco, 1);
     //resonance
-    else if(nu.Mode()==1) nuereco_type[1]->Fill(nu.Nu().E(), reco, 1);
+    else if(nu.CCNC()==0 && nu.Mode()==1) nuereco_type[2]->Fill(nu.Nu().E(), reco, 1);
+    else if(nu.CCNC()==1 && nu.Mode()==1) nuereco_type[3]->Fill(nu.Nu().E(), reco, 1);
     //deep inelastic scattering
-    else if(nu.Mode()==2) nuereco_type[2]->Fill(nu.Nu().E(), reco, 1);
+    else if(nu.CCNC()==0 && nu.Mode()==2) nuereco_type[4]->Fill(nu.Nu().E(), reco, 1);
+    else if(nu.CCNC()==1 && nu.Mode()==2) nuereco_type[5]->Fill(nu.Nu().E(), reco, 1);
     //coherent scattering
-    else if(nu.Mode()==3) nuereco_type[3]->Fill(nu.Nu().E(), reco, 1);
-    
+    else if(nu.CCNC()==0 && nu.Mode()==3) nuereco_type[6]->Fill(nu.Nu().E(), reco, 1);
+    else if(nu.CCNC()==1 && nu.Mode()==3) nuereco_type[7]->Fill(nu.Nu().E(), reco, 1);
+    //neutrino electron elastic scattering 
+    else if(nu.Mode()==5) nuereco_type[8]->Fill(nu.Nu().E(), reco, 1);
+    //Meson Exchange Current
+    else if(nu.Mode()==10) nuereco_type[9]->Fill(nu.Nu().E(), reco, 1);
   }
 
   for(size_t b=0; b<fRelShowers.size();b++){
     auto mcshower = fRelShowers.at(b);
     auto reco = FindRecoEnergy_nue(mcshower);
-    if(mcshower.PdgCode()==11){
-      nuE_vs_reco->Fill(nu.Nu().E(), reco, 1);
-    }
-    //CCQE
+    nuE_vs_reco->Fill(nu.Nu().E(), reco, 1);
+    //QE
     if(nu.CCNC()==0 && nu.Mode()==0) nuereco_type[0]->Fill(nu.Nu().E(), reco, 1);
+    else if(nu.CCNC()==1 && nu.Mode()==0) nuereco_type[1]->Fill(nu.Nu().E(), reco, 1);
     //resonance
-    else if(nu.Mode()==1) nuereco_type[1]->Fill(nu.Nu().E(), reco, 1);
+    else if(nu.CCNC()==0 && nu.Mode()==1) nuereco_type[2]->Fill(nu.Nu().E(), reco, 1);
+    else if(nu.CCNC()==1 && nu.Mode()==1) nuereco_type[3]->Fill(nu.Nu().E(), reco, 1);
     //deep inelastic scattering
-    else if(nu.Mode()==2) nuereco_type[2]->Fill(nu.Nu().E(), reco, 1);
+    else if(nu.CCNC()==0 && nu.Mode()==2) nuereco_type[4]->Fill(nu.Nu().E(), reco, 1);
+    else if(nu.CCNC()==1 && nu.Mode()==2) nuereco_type[5]->Fill(nu.Nu().E(), reco, 1);
     //coherent scattering
-    else if(nu.Mode()==3) nuereco_type[3]->Fill(nu.Nu().E(), reco, 1);
-    
+    else if(nu.CCNC()==0 && nu.Mode()==3) nuereco_type[6]->Fill(nu.Nu().E(), reco, 1);
+    else if(nu.CCNC()==1 && nu.Mode()==3) nuereco_type[7]->Fill(nu.Nu().E(), reco, 1);
+    //neutrino electron elastic scattering 
+    else if(nu.Mode()==5) nuereco_type[8]->Fill(nu.Nu().E(), reco, 1);
+    //Meson Exchange Current
+    else if(nu.Mode()==10) nuereco_type[9]->Fill(nu.Nu().E(), reco, 1);
   }
 }
 
@@ -358,6 +381,7 @@ void NueSelection::Finalize() {
   nuE_vs_reco->Write();
   Write2DHists(nuereco_type, nuereco_stack);
   WriteHists(showerE, showerE_stack); 
+  std::cout << "Total num tracks+showers: " << fTotTracksShowers << std::endl;
   std::cout << "Neutrino interaction types: " << std::endl;
   for(int i=0; i<fCodes.size(); i++){
     std::cout << fCodes[i] << std::endl;
@@ -380,6 +404,7 @@ bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Int
     *ev.getValidHandle<std::vector<sim::MCTrack>>(fTrackTag);
   auto const& mcshowers = \
     *ev.getValidHandle<std::vector<sim::MCShower>>(fShowerTag);
+  fTotTracksShowers += mctracks.size()+mcshowers.size();
 
   // Iterate through the neutrinos
   for (size_t i=0; i<mctruths.size(); i++) {
@@ -400,7 +425,7 @@ bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Int
     PrelimCuts_nue(nu, mcshowers, mctracks, prelimCuts);    
     DistFromNuVertex(nu,mcshowers, mctracks, dist_from_vertex, vertexDist_truth);
     NuE_vs_RecoE(nu, fRelShowers, fRelTracks);  
-    UniqueNuTypes(fCodes, nu);
+    //fCodes = UniqueNuTypes(fCodes, nu);
   }
 
   bool selected = !reco.empty();
