@@ -16,9 +16,12 @@
 #include "lardataobj/MCBase/MCShower.h"
 #include "nusimdata/SimulationBase/MCTruth.h"
 #include "lardataobj/MCBase/MCTrack.h"
+#include <random>
 
 //Forward declarations
 class TH2D;
+class TH1D;
+class THStack;
 
 namespace ana {
   namespace SBNOsc {
@@ -55,22 +58,45 @@ protected:
   unsigned fEventCounter;  //!< Count processed events
   unsigned fNuCount;  //!< Count num nu_e CCQE events
 
+  std::mt19937 rng;
+
   /** Configuration parameters */
   art::InputTag fTruthTag;  //!< art tag for MCTruth information
 };
   art::InputTag fTrackTag; //MCTrack
   art::InputTag fShowerTag;//MCShower
 
+  /** vectors */
+  std::vector<sim::MCTrack> fRelTracks; //MCTracks within 5 cm of neutrino interaction vertex
+  std::vector<sim::MCShower> fRelShowers; //MCShowers within 5 cm of neutrino interaction vertex
+
   /**histograms!*/
-  TH2D* fNuVertexXZHist;  //!< Neutrino vertex XZ projection
-  TH2D* fNuVertexXYHist; //nu vertex XY proj
-  TH2D* fNuVertexYZHist; //nu vertex YZ proj
-  TH2D* fTrackXY;
-  TH2D* fTrackYZ;
-  TH2D* fTrackXZ;
-  TH2D* fShowerXY;
-  TH2D* fShowerYZ;
-  TH2D* fShowerXZ;
+  std::vector<TH1D*> fCut1; //cuts for selection criteria nu_e CC electron with E_e > 200 MeV
+  THStack* cut1stack;
+  std::vector<TH1D*> fCut2;
+  THStack* cut2stack;
+  std::vector<TH1D*> fCut3;
+  THStack* cut3stack;
+
+  std::vector<TH1D*> fCut1_reco; //Cut 1 with reconstructed neutrino energy
+  THStack* cut1stack_reco;
+  std::vector<TH1D*> cut2a;
+  THStack* cut2a_stack;
+  std::vector<TH1D*> cut2b;
+  THStack* cut2b_stack;
+  std::vector<TH1D*> pi2gamma; //ct vs photon shower energy
+  THStack* gamma2Stack; 
+  std::vector<TH1D*> visiblevertex;
+  THStack* vertexstack;
+  std::vector<TH1D*> dEdx_gamma;
+  THStack* dEdx_gammastack; 
+
+  std::vector<TH1D*> fig11;
+  THStack* fig11stack;
+  TH1D* dEdx;
+  std::vector<TH1D*> dEdx_2; //differentiates b/w gamma and e- showers
+  THStack* dEdx_2_stack;
+
   }  // namespace SBNOsc
 }  // namespace ana
 
