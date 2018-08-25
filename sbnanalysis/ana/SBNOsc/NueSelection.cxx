@@ -114,8 +114,9 @@ void NueSelection::Initialize(Json::Value* config) {
 
   if (config) {
     fTruthTag = { (*config)["SBNOsc"].get("MCTruthTag", "generator").asString() };
-    fTrackTag = { (*config)["ExampleAnalysis"].get("MCTrackTag", "mcreco").asString() };
-    fShowerTag = { (*config)["ExampleAnalysis"].get("MCShowerTag", "mcreco").asString() };
+    fTrackTag = { (*config)["SBNOsc"].get("MCTrackTag", "mcreco").asString() };
+    fShowerTag = { (*config)["SBNOsc"].get("MCShowerTag", "mcreco").asString() };
+    fdEdx = (*config)["SBNOsc"].get("dEdxcut",0.1).asDouble();
   }
 
   // Make a histogram
@@ -423,7 +424,7 @@ void Cut2(simb::MCNeutrino nu, std::vector<sim::MCTrack> fRelTracks, std::vector
       auto const& mcshower = fRelShowers.at(sh);
       if(mcshower.PdgCode()==22){
       dEdx_gamma[1]->Fill(mcshower.Start().E(),1); //total photon showers not rejected
-        if(mcshower.dEdx()<1.6){
+        if(mcshower.dEdx()<fdEdx && mcshower.dEdx()!=0){
           hists[1]->Fill(nuE,1);
           fig11[3]->Fill(FindRecoEnergy_nue(mcshower),1);
           dEdx_gamma[2]->Fill(mcshower.Start().E(),1); //total # photon showers passing dEdx cut
@@ -535,6 +536,7 @@ void NueSelection::Finalize() {
   WriteHists(fig11, fig11stack);
   dEdx->Write();
   WriteHists(dEdx_2, dEdx_2_stack);
+  std::cout << "config param fdEdx = " << fdEdx << std::endl;
 }
 
 bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Interaction>& reco) {

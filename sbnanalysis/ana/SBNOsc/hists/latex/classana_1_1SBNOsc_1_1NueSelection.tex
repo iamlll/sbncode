@@ -1,0 +1,108 @@
+\hypertarget{classana_1_1SBNOsc_1_1NueSelection}{
+\section{ana::SBNOsc::NueSelection Class Reference}
+\label{classana_1_1SBNOsc_1_1NueSelection}\index{ana::SBNOsc::NueSelection@{ana::SBNOsc::NueSelection}}
+}
+
+
+Electron neutrino event selection.  
+
+
+{\ttfamily \#include $<$NueSelection.h$>$}\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classana_1_1SBNOsc_1_1NueSelection_aa7520d861b94192521dd188b6ef4a7a5}{NueSelection} ()
+\item 
+void \hyperlink{classana_1_1SBNOsc_1_1NueSelection_a65827f6f5670431cad9479d6e9c3a3dc}{Initialize} (Json::Value $\ast$config=NULL)
+\item 
+void \hyperlink{classana_1_1SBNOsc_1_1NueSelection_a27bfa9d84344b8615e26f03f49a0a618}{Finalize} ()
+\item 
+bool \hyperlink{classana_1_1SBNOsc_1_1NueSelection_a5c633a75ee3f7bdbcb5b09c253595377}{ProcessEvent} (const gallery::Event \&ev, std::vector$<$ Event::Interaction $>$ \&reco)
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+unsigned \hyperlink{classana_1_1SBNOsc_1_1NueSelection_afabc5bb1bf5a7a99313f4e12c335e99c}{fEventCounter}
+\begin{DoxyCompactList}\small\item\em Count processed events. \item\end{DoxyCompactList}\item 
+unsigned \hyperlink{classana_1_1SBNOsc_1_1NueSelection_aead1cb7ecd90992089e49372489c14f7}{fNuCount}
+\begin{DoxyCompactList}\small\item\em Count num nu\_\-e CCQE events. \item\end{DoxyCompactList}\item 
+std::mt19937 \hyperlink{classana_1_1SBNOsc_1_1NueSelection_aee198d69333054b12b7cb42425ca4a1e}{rng}
+\item 
+art::InputTag \hyperlink{classana_1_1SBNOsc_1_1NueSelection_ae339e3e05a25bb103543328f4d6c62ae}{fTruthTag}
+\begin{DoxyCompactList}\small\item\em art tag for MCTruth information \item\end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Electron neutrino event selection. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classana_1_1SBNOsc_1_1NueSelection_aa7520d861b94192521dd188b6ef4a7a5}{
+\index{ana::SBNOsc::NueSelection@{ana::SBNOsc::NueSelection}!NueSelection@{NueSelection}}
+\index{NueSelection@{NueSelection}!ana::SBNOsc::NueSelection@{ana::SBNOsc::NueSelection}}
+\subsubsection[{NueSelection}]{\setlength{\rightskip}{0pt plus 5cm}ana::SBNOsc::NueSelection::NueSelection ()}}
+\label{classana_1_1SBNOsc_1_1NueSelection_aa7520d861b94192521dd188b6ef4a7a5}
+Constructor. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classana_1_1SBNOsc_1_1NueSelection_a27bfa9d84344b8615e26f03f49a0a618}{
+\index{ana::SBNOsc::NueSelection@{ana::SBNOsc::NueSelection}!Finalize@{Finalize}}
+\index{Finalize@{Finalize}!ana::SBNOsc::NueSelection@{ana::SBNOsc::NueSelection}}
+\subsubsection[{Finalize}]{\setlength{\rightskip}{0pt plus 5cm}void ana::SBNOsc::NueSelection::Finalize ()}}
+\label{classana_1_1SBNOsc_1_1NueSelection_a27bfa9d84344b8615e26f03f49a0a618}
+Finalize and write objects to the output file. \hypertarget{classana_1_1SBNOsc_1_1NueSelection_a65827f6f5670431cad9479d6e9c3a3dc}{
+\index{ana::SBNOsc::NueSelection@{ana::SBNOsc::NueSelection}!Initialize@{Initialize}}
+\index{Initialize@{Initialize}!ana::SBNOsc::NueSelection@{ana::SBNOsc::NueSelection}}
+\subsubsection[{Initialize}]{\setlength{\rightskip}{0pt plus 5cm}void ana::SBNOsc::NueSelection::Initialize (Json::Value $\ast$ {\em config} = {\ttfamily NULL})}}
+\label{classana_1_1SBNOsc_1_1NueSelection_a65827f6f5670431cad9479d6e9c3a3dc}
+Initialization.
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em config}]A configuration, as a JSON object \end{DoxyParams}
+\hypertarget{classana_1_1SBNOsc_1_1NueSelection_a5c633a75ee3f7bdbcb5b09c253595377}{
+\index{ana::SBNOsc::NueSelection@{ana::SBNOsc::NueSelection}!ProcessEvent@{ProcessEvent}}
+\index{ProcessEvent@{ProcessEvent}!ana::SBNOsc::NueSelection@{ana::SBNOsc::NueSelection}}
+\subsubsection[{ProcessEvent}]{\setlength{\rightskip}{0pt plus 5cm}bool ana::SBNOsc::NueSelection::ProcessEvent (const gallery::Event \& {\em ev}, \/  std::vector$<$ Event::Interaction $>$ \& {\em reco})}}
+\label{classana_1_1SBNOsc_1_1NueSelection_a5c633a75ee3f7bdbcb5b09c253595377}
+Process one event.
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em ev}]A single event, as a gallery::Event \item[{\em Reconstructed}]interactions \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True to keep event 
+\end{DoxyReturn}
+
+
+\subsection{Member Data Documentation}
+\hypertarget{classana_1_1SBNOsc_1_1NueSelection_afabc5bb1bf5a7a99313f4e12c335e99c}{
+\index{ana::SBNOsc::NueSelection@{ana::SBNOsc::NueSelection}!fEventCounter@{fEventCounter}}
+\index{fEventCounter@{fEventCounter}!ana::SBNOsc::NueSelection@{ana::SBNOsc::NueSelection}}
+\subsubsection[{fEventCounter}]{\setlength{\rightskip}{0pt plus 5cm}unsigned {\bf ana::SBNOsc::NueSelection::fEventCounter}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classana_1_1SBNOsc_1_1NueSelection_afabc5bb1bf5a7a99313f4e12c335e99c}
+
+
+Count processed events. \hypertarget{classana_1_1SBNOsc_1_1NueSelection_aead1cb7ecd90992089e49372489c14f7}{
+\index{ana::SBNOsc::NueSelection@{ana::SBNOsc::NueSelection}!fNuCount@{fNuCount}}
+\index{fNuCount@{fNuCount}!ana::SBNOsc::NueSelection@{ana::SBNOsc::NueSelection}}
+\subsubsection[{fNuCount}]{\setlength{\rightskip}{0pt plus 5cm}unsigned {\bf ana::SBNOsc::NueSelection::fNuCount}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classana_1_1SBNOsc_1_1NueSelection_aead1cb7ecd90992089e49372489c14f7}
+
+
+Count num nu\_\-e CCQE events. \hypertarget{classana_1_1SBNOsc_1_1NueSelection_ae339e3e05a25bb103543328f4d6c62ae}{
+\index{ana::SBNOsc::NueSelection@{ana::SBNOsc::NueSelection}!fTruthTag@{fTruthTag}}
+\index{fTruthTag@{fTruthTag}!ana::SBNOsc::NueSelection@{ana::SBNOsc::NueSelection}}
+\subsubsection[{fTruthTag}]{\setlength{\rightskip}{0pt plus 5cm}art::InputTag {\bf ana::SBNOsc::NueSelection::fTruthTag}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classana_1_1SBNOsc_1_1NueSelection_ae339e3e05a25bb103543328f4d6c62ae}
+
+
+art tag for MCTruth information Configuration parameters \hypertarget{classana_1_1SBNOsc_1_1NueSelection_aee198d69333054b12b7cb42425ca4a1e}{
+\index{ana::SBNOsc::NueSelection@{ana::SBNOsc::NueSelection}!rng@{rng}}
+\index{rng@{rng}!ana::SBNOsc::NueSelection@{ana::SBNOsc::NueSelection}}
+\subsubsection[{rng}]{\setlength{\rightskip}{0pt plus 5cm}std::mt19937 {\bf ana::SBNOsc::NueSelection::rng}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classana_1_1SBNOsc_1_1NueSelection_aee198d69333054b12b7cb42425ca4a1e}
+
+
+The documentation for this class was generated from the following files:\begin{DoxyCompactItemize}
+\item 
+/sbnd/app/users/llin/sbncode-\/v06\_\-80\_\-00/srcs/sbncode/sbnanalysis/ana/SBNOsc/\hyperlink{NueSelection_8h}{NueSelection.h}\item 
+/sbnd/app/users/llin/sbncode-\/v06\_\-80\_\-00/srcs/sbncode/sbnanalysis/ana/SBNOsc/\hyperlink{NueSelection_8cxx}{NueSelection.cxx}\end{DoxyCompactItemize}

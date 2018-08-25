@@ -65,6 +65,7 @@ protected:
 };
   art::InputTag fTrackTag; //MCTrack
   art::InputTag fShowerTag;//MCShower
+  double fdEdx;
 
   /** vectors */
   std::vector<sim::MCTrack> fRelTracks; //MCTracks within 5 cm of neutrino interaction vertex

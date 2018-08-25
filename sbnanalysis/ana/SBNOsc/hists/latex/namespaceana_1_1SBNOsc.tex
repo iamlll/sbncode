@@ -1,0 +1,329 @@
+\hypertarget{namespaceana_1_1SBNOsc}{
+\section{ana::SBNOsc Namespace Reference}
+\label{namespaceana_1_1SBNOsc}\index{ana::SBNOsc@{ana::SBNOsc}}
+}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classana_1_1SBNOsc_1_1NueSelection}{NueSelection}
+\begin{DoxyCompactList}\small\item\em Electron neutrino event selection. \item\end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_aa40041630409c79b46793f85659e12ff}{ColorFill} (std::vector$<$ TH1D $\ast$ $>$ hists, std::mt19937 rng, bool fill)
+\item 
+std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_a9562f13f1927dd6d87f47a116ea88773}{InitializeHists} (int nbins, double lowX, double highX, int size, std::string baseTitle, std::mt19937 rng, bool fill)
+\item 
+void \hyperlink{namespaceana_1_1SBNOsc_a95cf1192e7bd36e933fbb8333e88391a}{WriteHists} (std::vector$<$ TH1D $\ast$ $>$ vec, THStack $\ast$stack)
+\item 
+bool \hyperlink{namespaceana_1_1SBNOsc_a7e1f4b48137c1022518fb8eaaf87c5b6}{AnybodyHome\_\-SBND} (TLorentzVector pos)
+\item 
+double \hyperlink{namespaceana_1_1SBNOsc_a3bcacb7d02055361a967634a2d0a4241}{FindDistance} (TLorentzVector a, TLorentzVector b)
+\item 
+double \hyperlink{namespaceana_1_1SBNOsc_abec8e35567f2cdc64d5dcff2ecdb84c7}{FindRecoEnergy\_\-nue} (sim::MCShower mcshower)
+\item 
+double \hyperlink{namespaceana_1_1SBNOsc_ab46ae3a2aa11ce84c3ee5c6a03eccf27}{FindRecoEnergy\_\-nue} (sim::MCTrack mctrack)
+\item 
+double \hyperlink{namespaceana_1_1SBNOsc_a3f759be55b0fe7e802a69f9282dccdb5}{FindRecoEnergy\_\-numu} (sim::MCTrack mctrack)
+\item 
+std::vector$<$ sim::MCTrack $>$ \hyperlink{namespaceana_1_1SBNOsc_a06684ac90b7f2450f87b5cebe46e63d3}{FindRelevantTracks} (TLorentzVector nuVertex, std::vector$<$ sim::MCTrack $>$ mctracks)
+\item 
+std::vector$<$ sim::MCShower $>$ \hyperlink{namespaceana_1_1SBNOsc_a89dd300b266b27181c851bdbbeb1c02f}{FindRelevantShowers} (TLorentzVector nuVertex, std::vector$<$ sim::MCShower $>$ mcshowers)
+\item 
+int \hyperlink{namespaceana_1_1SBNOsc_a3b92678464aac3671246acd19a96e49a}{LinkShower\_\-HadronParent} (simb::MCFlux mcflux, simb::MCTruth mctruth, sim::MCShower mcshower)
+\item 
+double \hyperlink{namespaceana_1_1SBNOsc_ac84baa6d3fc6c2bed6b6a28ac055eae4}{ActiveTrackLength} (sim::MCTrack mctrack)
+\item 
+void \hyperlink{namespaceana_1_1SBNOsc_aee76a04c637ea0eabf24d70fa1fa93fa}{Cut1} (simb::MCTruth mctruth, std::vector$<$ sim::MCTrack $>$ \hyperlink{namespaceana_1_1SBNOsc_a91abcb43a0813753bf8d88336515df12}{fRelTracks}, std::vector$<$ sim::MCShower $>$ \hyperlink{namespaceana_1_1SBNOsc_a835384228e9ece629d6af6a74abfadeb}{fRelShowers}, std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_a2b70de8a58ae31f4f22507b834355ca3}{fCut1}, std::mt19937 rng)
+\item 
+void \hyperlink{namespaceana_1_1SBNOsc_ab43b2a2a21ac09029397875c621110b3}{Cut1\_\-reco} (simb::MCFlux mcflux, simb::MCTruth mctruth, std::vector$<$ sim::MCShower $>$ mcshowers, std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_a2b70de8a58ae31f4f22507b834355ca3}{fCut1}, std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_a0c37526999b8777b80e9324b335de4a9}{fig11}, std::mt19937 rng)
+\item 
+void \hyperlink{namespaceana_1_1SBNOsc_adaef1c3b82bf0bab423a70312245059f}{Cut2} (simb::MCNeutrino nu, std::vector$<$ sim::MCTrack $>$ \hyperlink{namespaceana_1_1SBNOsc_a91abcb43a0813753bf8d88336515df12}{fRelTracks}, std::vector$<$ sim::MCShower $>$ \hyperlink{namespaceana_1_1SBNOsc_a835384228e9ece629d6af6a74abfadeb}{fRelShowers}, std::vector$<$ TH1D $\ast$ $>$ hists, std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_a0c37526999b8777b80e9324b335de4a9}{fig11}, std::mt19937 rng)
+\item 
+void \hyperlink{namespaceana_1_1SBNOsc_a24094a24b2cf1d3e69b8c2be9530863d}{Cut3} (simb::MCTruth mctruth, std::vector$<$ sim::MCTrack $>$ \hyperlink{namespaceana_1_1SBNOsc_a91abcb43a0813753bf8d88336515df12}{fRelTracks}, std::vector$<$ sim::MCShower $>$ \hyperlink{namespaceana_1_1SBNOsc_a835384228e9ece629d6af6a74abfadeb}{fRelShowers}, std::vector$<$ TH1D $\ast$ $>$ hists, std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_a0c37526999b8777b80e9324b335de4a9}{fig11}, std::mt19937 rng)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+art::InputTag \hyperlink{namespaceana_1_1SBNOsc_adabde93df02e88c081f79f1e98052f59}{fTrackTag}
+\item 
+art::InputTag \hyperlink{namespaceana_1_1SBNOsc_add9629697b222d44721995afd2fa694d}{fShowerTag}
+\item 
+double \hyperlink{namespaceana_1_1SBNOsc_ad834236bb006b3a55bbe7ae130d1f676}{fdEdx}
+\item 
+std::vector$<$ sim::MCTrack $>$ \hyperlink{namespaceana_1_1SBNOsc_a91abcb43a0813753bf8d88336515df12}{fRelTracks}
+\item 
+std::vector$<$ sim::MCShower $>$ \hyperlink{namespaceana_1_1SBNOsc_a835384228e9ece629d6af6a74abfadeb}{fRelShowers}
+\item 
+std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_a2b70de8a58ae31f4f22507b834355ca3}{fCut1}
+\item 
+THStack $\ast$ \hyperlink{namespaceana_1_1SBNOsc_af8390393ea68437d73758036b740a73f}{cut1stack}
+\item 
+std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_a43e7785299a377e013e7f6269265aa97}{fCut2}
+\item 
+THStack $\ast$ \hyperlink{namespaceana_1_1SBNOsc_a4759d52cc74712f52a292470ae186ac9}{cut2stack}
+\item 
+std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_af6006c681af8f13be0876d4f8b8269a4}{fCut3}
+\item 
+THStack $\ast$ \hyperlink{namespaceana_1_1SBNOsc_a59ec32e8647b070c9eedcc543a4ff12b}{cut3stack}
+\item 
+std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_a6a5934f9b51a16fc44557f0db1333821}{fCut1\_\-reco}
+\item 
+THStack $\ast$ \hyperlink{namespaceana_1_1SBNOsc_a5b54ee23ff0072697a843d8a459efdfc}{cut1stack\_\-reco}
+\item 
+std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_a9b9151469b378e181b41a28c26adc0e5}{cut2a}
+\item 
+THStack $\ast$ \hyperlink{namespaceana_1_1SBNOsc_a0c223e1ce88af244e57230b4772e1c43}{cut2a\_\-stack}
+\item 
+std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_a13e04f5a0bc2bf349e9947a45bc609bb}{cut2b}
+\item 
+THStack $\ast$ \hyperlink{namespaceana_1_1SBNOsc_abee8fcfad8f7a669abab543ecb154c40}{cut2b\_\-stack}
+\item 
+std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_afeea6a75b46adcbda7b0a958a3481c57}{pi2gamma}
+\item 
+THStack $\ast$ \hyperlink{namespaceana_1_1SBNOsc_a30d63f8aba0987e9f063a67cce396d97}{gamma2Stack}
+\item 
+std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_a95cef1471ba412cf64f93382ecf777ed}{visiblevertex}
+\item 
+THStack $\ast$ \hyperlink{namespaceana_1_1SBNOsc_ab0d2c7f96f4320254bbda9e0041e6a3e}{vertexstack}
+\item 
+std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_a8bedf9b350e32fa2630521a1eb2a3b3c}{dEdx\_\-gamma}
+\item 
+THStack $\ast$ \hyperlink{namespaceana_1_1SBNOsc_a8edd8b5017a133cdd3e468899e0f7a5f}{dEdx\_\-gammastack}
+\item 
+std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_a0c37526999b8777b80e9324b335de4a9}{fig11}
+\item 
+THStack $\ast$ \hyperlink{namespaceana_1_1SBNOsc_adadc17855404843a6eb2a4306e22a460}{fig11stack}
+\item 
+TH1D $\ast$ \hyperlink{namespaceana_1_1SBNOsc_a8b644de838352477b63ffdd383f6c253}{dEdx}
+\item 
+std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_ab49147463b012e19132ce3747551ddfd}{dEdx\_\-2}
+\item 
+THStack $\ast$ \hyperlink{namespaceana_1_1SBNOsc_ab1c4aa783d9a2387391c600f3988fac5}{dEdx\_\-2\_\-stack}
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\hypertarget{namespaceana_1_1SBNOsc_ac84baa6d3fc6c2bed6b6a28ac055eae4}{
+\index{ana::SBNOsc@{ana::SBNOsc}!ActiveTrackLength@{ActiveTrackLength}}
+\index{ActiveTrackLength@{ActiveTrackLength}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{ActiveTrackLength}]{\setlength{\rightskip}{0pt plus 5cm}double ana::SBNOsc::ActiveTrackLength (sim::MCTrack {\em mctrack})}}
+\label{namespaceana_1_1SBNOsc_ac84baa6d3fc6c2bed6b6a28ac055eae4}
+\hypertarget{namespaceana_1_1SBNOsc_a7e1f4b48137c1022518fb8eaaf87c5b6}{
+\index{ana::SBNOsc@{ana::SBNOsc}!AnybodyHome\_\-SBND@{AnybodyHome\_\-SBND}}
+\index{AnybodyHome\_\-SBND@{AnybodyHome\_\-SBND}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{AnybodyHome\_\-SBND}]{\setlength{\rightskip}{0pt plus 5cm}bool ana::SBNOsc::AnybodyHome\_\-SBND (TLorentzVector {\em pos})}}
+\label{namespaceana_1_1SBNOsc_a7e1f4b48137c1022518fb8eaaf87c5b6}
+Returns whether the particle is within the fiducial volume of the detector \hypertarget{namespaceana_1_1SBNOsc_aa40041630409c79b46793f85659e12ff}{
+\index{ana::SBNOsc@{ana::SBNOsc}!ColorFill@{ColorFill}}
+\index{ColorFill@{ColorFill}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{ColorFill}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$TH1D$\ast$$>$ ana::SBNOsc::ColorFill (std::vector$<$ TH1D $\ast$ $>$ {\em hists}, \/  std::mt19937 {\em rng}, \/  bool {\em fill})}}
+\label{namespaceana_1_1SBNOsc_aa40041630409c79b46793f85659e12ff}
+\hypertarget{namespaceana_1_1SBNOsc_aee76a04c637ea0eabf24d70fa1fa93fa}{
+\index{ana::SBNOsc@{ana::SBNOsc}!Cut1@{Cut1}}
+\index{Cut1@{Cut1}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{Cut1}]{\setlength{\rightskip}{0pt plus 5cm}void ana::SBNOsc::Cut1 (simb::MCTruth {\em mctruth}, \/  std::vector$<$ sim::MCTrack $>$ {\em fRelTracks}, \/  std::vector$<$ sim::MCShower $>$ {\em fRelShowers}, \/  std::vector$<$ TH1D $\ast$ $>$ {\em fCut1}, \/  std::mt19937 {\em rng})}}
+\label{namespaceana_1_1SBNOsc_aee76a04c637ea0eabf24d70fa1fa93fa}
+\hypertarget{namespaceana_1_1SBNOsc_ab43b2a2a21ac09029397875c621110b3}{
+\index{ana::SBNOsc@{ana::SBNOsc}!Cut1\_\-reco@{Cut1\_\-reco}}
+\index{Cut1\_\-reco@{Cut1\_\-reco}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{Cut1\_\-reco}]{\setlength{\rightskip}{0pt plus 5cm}void ana::SBNOsc::Cut1\_\-reco (simb::MCFlux {\em mcflux}, \/  simb::MCTruth {\em mctruth}, \/  std::vector$<$ sim::MCShower $>$ {\em mcshowers}, \/  std::vector$<$ TH1D $\ast$ $>$ {\em fCut1}, \/  std::vector$<$ TH1D $\ast$ $>$ {\em fig11}, \/  std::mt19937 {\em rng})}}
+\label{namespaceana_1_1SBNOsc_ab43b2a2a21ac09029397875c621110b3}
+\hypertarget{namespaceana_1_1SBNOsc_adaef1c3b82bf0bab423a70312245059f}{
+\index{ana::SBNOsc@{ana::SBNOsc}!Cut2@{Cut2}}
+\index{Cut2@{Cut2}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{Cut2}]{\setlength{\rightskip}{0pt plus 5cm}void ana::SBNOsc::Cut2 (simb::MCNeutrino {\em nu}, \/  std::vector$<$ sim::MCTrack $>$ {\em fRelTracks}, \/  std::vector$<$ sim::MCShower $>$ {\em fRelShowers}, \/  std::vector$<$ TH1D $\ast$ $>$ {\em hists}, \/  std::vector$<$ TH1D $\ast$ $>$ {\em fig11}, \/  std::mt19937 {\em rng})}}
+\label{namespaceana_1_1SBNOsc_adaef1c3b82bf0bab423a70312245059f}
+\hypertarget{namespaceana_1_1SBNOsc_a24094a24b2cf1d3e69b8c2be9530863d}{
+\index{ana::SBNOsc@{ana::SBNOsc}!Cut3@{Cut3}}
+\index{Cut3@{Cut3}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{Cut3}]{\setlength{\rightskip}{0pt plus 5cm}void ana::SBNOsc::Cut3 (simb::MCTruth {\em mctruth}, \/  std::vector$<$ sim::MCTrack $>$ {\em fRelTracks}, \/  std::vector$<$ sim::MCShower $>$ {\em fRelShowers}, \/  std::vector$<$ TH1D $\ast$ $>$ {\em hists}, \/  std::vector$<$ TH1D $\ast$ $>$ {\em fig11}, \/  std::mt19937 {\em rng})}}
+\label{namespaceana_1_1SBNOsc_a24094a24b2cf1d3e69b8c2be9530863d}
+\hypertarget{namespaceana_1_1SBNOsc_a3bcacb7d02055361a967634a2d0a4241}{
+\index{ana::SBNOsc@{ana::SBNOsc}!FindDistance@{FindDistance}}
+\index{FindDistance@{FindDistance}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{FindDistance}]{\setlength{\rightskip}{0pt plus 5cm}double ana::SBNOsc::FindDistance (TLorentzVector {\em a}, \/  TLorentzVector {\em b})}}
+\label{namespaceana_1_1SBNOsc_a3bcacb7d02055361a967634a2d0a4241}
+\hypertarget{namespaceana_1_1SBNOsc_ab46ae3a2aa11ce84c3ee5c6a03eccf27}{
+\index{ana::SBNOsc@{ana::SBNOsc}!FindRecoEnergy\_\-nue@{FindRecoEnergy\_\-nue}}
+\index{FindRecoEnergy\_\-nue@{FindRecoEnergy\_\-nue}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{FindRecoEnergy\_\-nue}]{\setlength{\rightskip}{0pt plus 5cm}double ana::SBNOsc::FindRecoEnergy\_\-nue (sim::MCTrack {\em mctrack})}}
+\label{namespaceana_1_1SBNOsc_ab46ae3a2aa11ce84c3ee5c6a03eccf27}
+\hypertarget{namespaceana_1_1SBNOsc_abec8e35567f2cdc64d5dcff2ecdb84c7}{
+\index{ana::SBNOsc@{ana::SBNOsc}!FindRecoEnergy\_\-nue@{FindRecoEnergy\_\-nue}}
+\index{FindRecoEnergy\_\-nue@{FindRecoEnergy\_\-nue}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{FindRecoEnergy\_\-nue}]{\setlength{\rightskip}{0pt plus 5cm}double ana::SBNOsc::FindRecoEnergy\_\-nue (sim::MCShower {\em mcshower})}}
+\label{namespaceana_1_1SBNOsc_abec8e35567f2cdc64d5dcff2ecdb84c7}
+\hypertarget{namespaceana_1_1SBNOsc_a3f759be55b0fe7e802a69f9282dccdb5}{
+\index{ana::SBNOsc@{ana::SBNOsc}!FindRecoEnergy\_\-numu@{FindRecoEnergy\_\-numu}}
+\index{FindRecoEnergy\_\-numu@{FindRecoEnergy\_\-numu}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{FindRecoEnergy\_\-numu}]{\setlength{\rightskip}{0pt plus 5cm}double ana::SBNOsc::FindRecoEnergy\_\-numu (sim::MCTrack {\em mctrack})}}
+\label{namespaceana_1_1SBNOsc_a3f759be55b0fe7e802a69f9282dccdb5}
+\hypertarget{namespaceana_1_1SBNOsc_a89dd300b266b27181c851bdbbeb1c02f}{
+\index{ana::SBNOsc@{ana::SBNOsc}!FindRelevantShowers@{FindRelevantShowers}}
+\index{FindRelevantShowers@{FindRelevantShowers}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{FindRelevantShowers}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$sim::MCShower$>$ ana::SBNOsc::FindRelevantShowers (TLorentzVector {\em nuVertex}, \/  std::vector$<$ sim::MCShower $>$ {\em mcshowers})}}
+\label{namespaceana_1_1SBNOsc_a89dd300b266b27181c851bdbbeb1c02f}
+\hypertarget{namespaceana_1_1SBNOsc_a06684ac90b7f2450f87b5cebe46e63d3}{
+\index{ana::SBNOsc@{ana::SBNOsc}!FindRelevantTracks@{FindRelevantTracks}}
+\index{FindRelevantTracks@{FindRelevantTracks}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{FindRelevantTracks}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$sim::MCTrack$>$ ana::SBNOsc::FindRelevantTracks (TLorentzVector {\em nuVertex}, \/  std::vector$<$ sim::MCTrack $>$ {\em mctracks})}}
+\label{namespaceana_1_1SBNOsc_a06684ac90b7f2450f87b5cebe46e63d3}
+\hypertarget{namespaceana_1_1SBNOsc_a9562f13f1927dd6d87f47a116ea88773}{
+\index{ana::SBNOsc@{ana::SBNOsc}!InitializeHists@{InitializeHists}}
+\index{InitializeHists@{InitializeHists}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{InitializeHists}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$TH1D$\ast$$>$ ana::SBNOsc::InitializeHists (int {\em nbins}, \/  double {\em lowX}, \/  double {\em highX}, \/  int {\em size}, \/  std::string {\em baseTitle}, \/  std::mt19937 {\em rng}, \/  bool {\em fill})}}
+\label{namespaceana_1_1SBNOsc_a9562f13f1927dd6d87f47a116ea88773}
+\hypertarget{namespaceana_1_1SBNOsc_a3b92678464aac3671246acd19a96e49a}{
+\index{ana::SBNOsc@{ana::SBNOsc}!LinkShower\_\-HadronParent@{LinkShower\_\-HadronParent}}
+\index{LinkShower\_\-HadronParent@{LinkShower\_\-HadronParent}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{LinkShower\_\-HadronParent}]{\setlength{\rightskip}{0pt plus 5cm}int ana::SBNOsc::LinkShower\_\-HadronParent (simb::MCFlux {\em mcflux}, \/  simb::MCTruth {\em mctruth}, \/  sim::MCShower {\em mcshower})}}
+\label{namespaceana_1_1SBNOsc_a3b92678464aac3671246acd19a96e49a}
+\hypertarget{namespaceana_1_1SBNOsc_a95cf1192e7bd36e933fbb8333e88391a}{
+\index{ana::SBNOsc@{ana::SBNOsc}!WriteHists@{WriteHists}}
+\index{WriteHists@{WriteHists}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{WriteHists}]{\setlength{\rightskip}{0pt plus 5cm}void ana::SBNOsc::WriteHists (std::vector$<$ TH1D $\ast$ $>$ {\em vec}, \/  THStack $\ast$ {\em stack})}}
+\label{namespaceana_1_1SBNOsc_a95cf1192e7bd36e933fbb8333e88391a}
+
+
+\subsection{Variable Documentation}
+\hypertarget{namespaceana_1_1SBNOsc_af8390393ea68437d73758036b740a73f}{
+\index{ana::SBNOsc@{ana::SBNOsc}!cut1stack@{cut1stack}}
+\index{cut1stack@{cut1stack}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{cut1stack}]{\setlength{\rightskip}{0pt plus 5cm}THStack$\ast$ {\bf ana::SBNOsc::cut1stack}}}
+\label{namespaceana_1_1SBNOsc_af8390393ea68437d73758036b740a73f}
+\hypertarget{namespaceana_1_1SBNOsc_a5b54ee23ff0072697a843d8a459efdfc}{
+\index{ana::SBNOsc@{ana::SBNOsc}!cut1stack\_\-reco@{cut1stack\_\-reco}}
+\index{cut1stack\_\-reco@{cut1stack\_\-reco}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{cut1stack\_\-reco}]{\setlength{\rightskip}{0pt plus 5cm}THStack$\ast$ {\bf ana::SBNOsc::cut1stack\_\-reco}}}
+\label{namespaceana_1_1SBNOsc_a5b54ee23ff0072697a843d8a459efdfc}
+\hypertarget{namespaceana_1_1SBNOsc_a9b9151469b378e181b41a28c26adc0e5}{
+\index{ana::SBNOsc@{ana::SBNOsc}!cut2a@{cut2a}}
+\index{cut2a@{cut2a}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{cut2a}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$TH1D$\ast$$>$ {\bf ana::SBNOsc::cut2a}}}
+\label{namespaceana_1_1SBNOsc_a9b9151469b378e181b41a28c26adc0e5}
+\hypertarget{namespaceana_1_1SBNOsc_a0c223e1ce88af244e57230b4772e1c43}{
+\index{ana::SBNOsc@{ana::SBNOsc}!cut2a\_\-stack@{cut2a\_\-stack}}
+\index{cut2a\_\-stack@{cut2a\_\-stack}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{cut2a\_\-stack}]{\setlength{\rightskip}{0pt plus 5cm}THStack$\ast$ {\bf ana::SBNOsc::cut2a\_\-stack}}}
+\label{namespaceana_1_1SBNOsc_a0c223e1ce88af244e57230b4772e1c43}
+\hypertarget{namespaceana_1_1SBNOsc_a13e04f5a0bc2bf349e9947a45bc609bb}{
+\index{ana::SBNOsc@{ana::SBNOsc}!cut2b@{cut2b}}
+\index{cut2b@{cut2b}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{cut2b}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$TH1D$\ast$$>$ {\bf ana::SBNOsc::cut2b}}}
+\label{namespaceana_1_1SBNOsc_a13e04f5a0bc2bf349e9947a45bc609bb}
+\hypertarget{namespaceana_1_1SBNOsc_abee8fcfad8f7a669abab543ecb154c40}{
+\index{ana::SBNOsc@{ana::SBNOsc}!cut2b\_\-stack@{cut2b\_\-stack}}
+\index{cut2b\_\-stack@{cut2b\_\-stack}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{cut2b\_\-stack}]{\setlength{\rightskip}{0pt plus 5cm}THStack$\ast$ {\bf ana::SBNOsc::cut2b\_\-stack}}}
+\label{namespaceana_1_1SBNOsc_abee8fcfad8f7a669abab543ecb154c40}
+\hypertarget{namespaceana_1_1SBNOsc_a4759d52cc74712f52a292470ae186ac9}{
+\index{ana::SBNOsc@{ana::SBNOsc}!cut2stack@{cut2stack}}
+\index{cut2stack@{cut2stack}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{cut2stack}]{\setlength{\rightskip}{0pt plus 5cm}THStack$\ast$ {\bf ana::SBNOsc::cut2stack}}}
+\label{namespaceana_1_1SBNOsc_a4759d52cc74712f52a292470ae186ac9}
+\hypertarget{namespaceana_1_1SBNOsc_a59ec32e8647b070c9eedcc543a4ff12b}{
+\index{ana::SBNOsc@{ana::SBNOsc}!cut3stack@{cut3stack}}
+\index{cut3stack@{cut3stack}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{cut3stack}]{\setlength{\rightskip}{0pt plus 5cm}THStack$\ast$ {\bf ana::SBNOsc::cut3stack}}}
+\label{namespaceana_1_1SBNOsc_a59ec32e8647b070c9eedcc543a4ff12b}
+\hypertarget{namespaceana_1_1SBNOsc_a8b644de838352477b63ffdd383f6c253}{
+\index{ana::SBNOsc@{ana::SBNOsc}!dEdx@{dEdx}}
+\index{dEdx@{dEdx}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{dEdx}]{\setlength{\rightskip}{0pt plus 5cm}TH1D$\ast$ {\bf ana::SBNOsc::dEdx}}}
+\label{namespaceana_1_1SBNOsc_a8b644de838352477b63ffdd383f6c253}
+\hypertarget{namespaceana_1_1SBNOsc_ab49147463b012e19132ce3747551ddfd}{
+\index{ana::SBNOsc@{ana::SBNOsc}!dEdx\_\-2@{dEdx\_\-2}}
+\index{dEdx\_\-2@{dEdx\_\-2}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{dEdx\_\-2}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$TH1D$\ast$$>$ {\bf ana::SBNOsc::dEdx\_\-2}}}
+\label{namespaceana_1_1SBNOsc_ab49147463b012e19132ce3747551ddfd}
+\hypertarget{namespaceana_1_1SBNOsc_ab1c4aa783d9a2387391c600f3988fac5}{
+\index{ana::SBNOsc@{ana::SBNOsc}!dEdx\_\-2\_\-stack@{dEdx\_\-2\_\-stack}}
+\index{dEdx\_\-2\_\-stack@{dEdx\_\-2\_\-stack}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{dEdx\_\-2\_\-stack}]{\setlength{\rightskip}{0pt plus 5cm}THStack$\ast$ {\bf ana::SBNOsc::dEdx\_\-2\_\-stack}}}
+\label{namespaceana_1_1SBNOsc_ab1c4aa783d9a2387391c600f3988fac5}
+\hypertarget{namespaceana_1_1SBNOsc_a8bedf9b350e32fa2630521a1eb2a3b3c}{
+\index{ana::SBNOsc@{ana::SBNOsc}!dEdx\_\-gamma@{dEdx\_\-gamma}}
+\index{dEdx\_\-gamma@{dEdx\_\-gamma}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{dEdx\_\-gamma}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$TH1D$\ast$$>$ {\bf ana::SBNOsc::dEdx\_\-gamma}}}
+\label{namespaceana_1_1SBNOsc_a8bedf9b350e32fa2630521a1eb2a3b3c}
+\hypertarget{namespaceana_1_1SBNOsc_a8edd8b5017a133cdd3e468899e0f7a5f}{
+\index{ana::SBNOsc@{ana::SBNOsc}!dEdx\_\-gammastack@{dEdx\_\-gammastack}}
+\index{dEdx\_\-gammastack@{dEdx\_\-gammastack}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{dEdx\_\-gammastack}]{\setlength{\rightskip}{0pt plus 5cm}THStack$\ast$ {\bf ana::SBNOsc::dEdx\_\-gammastack}}}
+\label{namespaceana_1_1SBNOsc_a8edd8b5017a133cdd3e468899e0f7a5f}
+\hypertarget{namespaceana_1_1SBNOsc_a2b70de8a58ae31f4f22507b834355ca3}{
+\index{ana::SBNOsc@{ana::SBNOsc}!fCut1@{fCut1}}
+\index{fCut1@{fCut1}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{fCut1}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$TH1D$\ast$$>$ {\bf ana::SBNOsc::fCut1}}}
+\label{namespaceana_1_1SBNOsc_a2b70de8a58ae31f4f22507b834355ca3}
+histograms! \hypertarget{namespaceana_1_1SBNOsc_a6a5934f9b51a16fc44557f0db1333821}{
+\index{ana::SBNOsc@{ana::SBNOsc}!fCut1\_\-reco@{fCut1\_\-reco}}
+\index{fCut1\_\-reco@{fCut1\_\-reco}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{fCut1\_\-reco}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$TH1D$\ast$$>$ {\bf ana::SBNOsc::fCut1\_\-reco}}}
+\label{namespaceana_1_1SBNOsc_a6a5934f9b51a16fc44557f0db1333821}
+\hypertarget{namespaceana_1_1SBNOsc_a43e7785299a377e013e7f6269265aa97}{
+\index{ana::SBNOsc@{ana::SBNOsc}!fCut2@{fCut2}}
+\index{fCut2@{fCut2}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{fCut2}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$TH1D$\ast$$>$ {\bf ana::SBNOsc::fCut2}}}
+\label{namespaceana_1_1SBNOsc_a43e7785299a377e013e7f6269265aa97}
+\hypertarget{namespaceana_1_1SBNOsc_af6006c681af8f13be0876d4f8b8269a4}{
+\index{ana::SBNOsc@{ana::SBNOsc}!fCut3@{fCut3}}
+\index{fCut3@{fCut3}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{fCut3}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$TH1D$\ast$$>$ {\bf ana::SBNOsc::fCut3}}}
+\label{namespaceana_1_1SBNOsc_af6006c681af8f13be0876d4f8b8269a4}
+\hypertarget{namespaceana_1_1SBNOsc_ad834236bb006b3a55bbe7ae130d1f676}{
+\index{ana::SBNOsc@{ana::SBNOsc}!fdEdx@{fdEdx}}
+\index{fdEdx@{fdEdx}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{fdEdx}]{\setlength{\rightskip}{0pt plus 5cm}double {\bf ana::SBNOsc::fdEdx}}}
+\label{namespaceana_1_1SBNOsc_ad834236bb006b3a55bbe7ae130d1f676}
+\hypertarget{namespaceana_1_1SBNOsc_a0c37526999b8777b80e9324b335de4a9}{
+\index{ana::SBNOsc@{ana::SBNOsc}!fig11@{fig11}}
+\index{fig11@{fig11}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{fig11}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$TH1D$\ast$$>$ {\bf ana::SBNOsc::fig11}}}
+\label{namespaceana_1_1SBNOsc_a0c37526999b8777b80e9324b335de4a9}
+\hypertarget{namespaceana_1_1SBNOsc_adadc17855404843a6eb2a4306e22a460}{
+\index{ana::SBNOsc@{ana::SBNOsc}!fig11stack@{fig11stack}}
+\index{fig11stack@{fig11stack}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{fig11stack}]{\setlength{\rightskip}{0pt plus 5cm}THStack$\ast$ {\bf ana::SBNOsc::fig11stack}}}
+\label{namespaceana_1_1SBNOsc_adadc17855404843a6eb2a4306e22a460}
+\hypertarget{namespaceana_1_1SBNOsc_a835384228e9ece629d6af6a74abfadeb}{
+\index{ana::SBNOsc@{ana::SBNOsc}!fRelShowers@{fRelShowers}}
+\index{fRelShowers@{fRelShowers}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{fRelShowers}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$sim::MCShower$>$ {\bf ana::SBNOsc::fRelShowers}}}
+\label{namespaceana_1_1SBNOsc_a835384228e9ece629d6af6a74abfadeb}
+\hypertarget{namespaceana_1_1SBNOsc_a91abcb43a0813753bf8d88336515df12}{
+\index{ana::SBNOsc@{ana::SBNOsc}!fRelTracks@{fRelTracks}}
+\index{fRelTracks@{fRelTracks}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{fRelTracks}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$sim::MCTrack$>$ {\bf ana::SBNOsc::fRelTracks}}}
+\label{namespaceana_1_1SBNOsc_a91abcb43a0813753bf8d88336515df12}
+vectors \hypertarget{namespaceana_1_1SBNOsc_add9629697b222d44721995afd2fa694d}{
+\index{ana::SBNOsc@{ana::SBNOsc}!fShowerTag@{fShowerTag}}
+\index{fShowerTag@{fShowerTag}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{fShowerTag}]{\setlength{\rightskip}{0pt plus 5cm}art::InputTag {\bf ana::SBNOsc::fShowerTag}}}
+\label{namespaceana_1_1SBNOsc_add9629697b222d44721995afd2fa694d}
+\hypertarget{namespaceana_1_1SBNOsc_adabde93df02e88c081f79f1e98052f59}{
+\index{ana::SBNOsc@{ana::SBNOsc}!fTrackTag@{fTrackTag}}
+\index{fTrackTag@{fTrackTag}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{fTrackTag}]{\setlength{\rightskip}{0pt plus 5cm}art::InputTag {\bf ana::SBNOsc::fTrackTag}}}
+\label{namespaceana_1_1SBNOsc_adabde93df02e88c081f79f1e98052f59}
+\hypertarget{namespaceana_1_1SBNOsc_a30d63f8aba0987e9f063a67cce396d97}{
+\index{ana::SBNOsc@{ana::SBNOsc}!gamma2Stack@{gamma2Stack}}
+\index{gamma2Stack@{gamma2Stack}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{gamma2Stack}]{\setlength{\rightskip}{0pt plus 5cm}THStack$\ast$ {\bf ana::SBNOsc::gamma2Stack}}}
+\label{namespaceana_1_1SBNOsc_a30d63f8aba0987e9f063a67cce396d97}
+\hypertarget{namespaceana_1_1SBNOsc_afeea6a75b46adcbda7b0a958a3481c57}{
+\index{ana::SBNOsc@{ana::SBNOsc}!pi2gamma@{pi2gamma}}
+\index{pi2gamma@{pi2gamma}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{pi2gamma}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$TH1D$\ast$$>$ {\bf ana::SBNOsc::pi2gamma}}}
+\label{namespaceana_1_1SBNOsc_afeea6a75b46adcbda7b0a958a3481c57}
+\hypertarget{namespaceana_1_1SBNOsc_ab0d2c7f96f4320254bbda9e0041e6a3e}{
+\index{ana::SBNOsc@{ana::SBNOsc}!vertexstack@{vertexstack}}
+\index{vertexstack@{vertexstack}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{vertexstack}]{\setlength{\rightskip}{0pt plus 5cm}THStack$\ast$ {\bf ana::SBNOsc::vertexstack}}}
+\label{namespaceana_1_1SBNOsc_ab0d2c7f96f4320254bbda9e0041e6a3e}
+\hypertarget{namespaceana_1_1SBNOsc_a95cef1471ba412cf64f93382ecf777ed}{
+\index{ana::SBNOsc@{ana::SBNOsc}!visiblevertex@{visiblevertex}}
+\index{visiblevertex@{visiblevertex}!ana::SBNOsc@{ana::SBNOsc}}
+\subsubsection[{visiblevertex}]{\setlength{\rightskip}{0pt plus 5cm}std::vector$<$TH1D$\ast$$>$ {\bf ana::SBNOsc::visiblevertex}}}
+\label{namespaceana_1_1SBNOsc_a95cef1471ba412cf64f93382ecf777ed}

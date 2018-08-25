@@ -1,0 +1,89 @@
+\hypertarget{NueSelection_8h}{
+\section{/sbnd/app/users/llin/sbncode-\/v06\_\-80\_\-00/srcs/sbncode/sbnanalysis/ana/SBNOsc/NueSelection.h File Reference}
+\label{NueSelection_8h}\index{/sbnd/app/users/llin/sbncode-\/v06\_\-80\_\-00/srcs/sbncode/sbnanalysis/ana/SBNOsc/NueSelection.h@{/sbnd/app/users/llin/sbncode-\/v06\_\-80\_\-00/srcs/sbncode/sbnanalysis/ana/SBNOsc/NueSelection.h}}
+}
+{\ttfamily \#include $<$iostream$>$}\par
+{\ttfamily \#include \char`\"{}canvas/Utilities/InputTag.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}core/SelectionBase.hh\char`\"{}}\par
+{\ttfamily \#include \char`\"{}core/Event.hh\char`\"{}}\par
+{\ttfamily \#include \char`\"{}lardataobj/MCBase/MCShower.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}nusimdata/SimulationBase/MCTruth.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}lardataobj/MCBase/MCTrack.h\char`\"{}}\par
+{\ttfamily \#include $<$random$>$}\par
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classana_1_1SBNOsc_1_1NueSelection}{ana::SBNOsc::NueSelection}
+\begin{DoxyCompactList}\small\item\em Electron neutrino event selection. \item\end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \hyperlink{namespaceana}{ana}
+\item 
+namespace \hyperlink{namespaceana_1_1SBNOsc}{ana::SBNOsc}
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+art::InputTag \hyperlink{namespaceana_1_1SBNOsc_adabde93df02e88c081f79f1e98052f59}{ana::SBNOsc::fTrackTag}
+\item 
+art::InputTag \hyperlink{namespaceana_1_1SBNOsc_add9629697b222d44721995afd2fa694d}{ana::SBNOsc::fShowerTag}
+\item 
+double \hyperlink{namespaceana_1_1SBNOsc_ad834236bb006b3a55bbe7ae130d1f676}{ana::SBNOsc::fdEdx}
+\item 
+std::vector$<$ sim::MCTrack $>$ \hyperlink{namespaceana_1_1SBNOsc_a91abcb43a0813753bf8d88336515df12}{ana::SBNOsc::fRelTracks}
+\item 
+std::vector$<$ sim::MCShower $>$ \hyperlink{namespaceana_1_1SBNOsc_a835384228e9ece629d6af6a74abfadeb}{ana::SBNOsc::fRelShowers}
+\item 
+std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_a2b70de8a58ae31f4f22507b834355ca3}{ana::SBNOsc::fCut1}
+\item 
+THStack $\ast$ \hyperlink{namespaceana_1_1SBNOsc_af8390393ea68437d73758036b740a73f}{ana::SBNOsc::cut1stack}
+\item 
+std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_a43e7785299a377e013e7f6269265aa97}{ana::SBNOsc::fCut2}
+\item 
+THStack $\ast$ \hyperlink{namespaceana_1_1SBNOsc_a4759d52cc74712f52a292470ae186ac9}{ana::SBNOsc::cut2stack}
+\item 
+std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_af6006c681af8f13be0876d4f8b8269a4}{ana::SBNOsc::fCut3}
+\item 
+THStack $\ast$ \hyperlink{namespaceana_1_1SBNOsc_a59ec32e8647b070c9eedcc543a4ff12b}{ana::SBNOsc::cut3stack}
+\item 
+std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_a6a5934f9b51a16fc44557f0db1333821}{ana::SBNOsc::fCut1\_\-reco}
+\item 
+THStack $\ast$ \hyperlink{namespaceana_1_1SBNOsc_a5b54ee23ff0072697a843d8a459efdfc}{ana::SBNOsc::cut1stack\_\-reco}
+\item 
+std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_a9b9151469b378e181b41a28c26adc0e5}{ana::SBNOsc::cut2a}
+\item 
+THStack $\ast$ \hyperlink{namespaceana_1_1SBNOsc_a0c223e1ce88af244e57230b4772e1c43}{ana::SBNOsc::cut2a\_\-stack}
+\item 
+std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_a13e04f5a0bc2bf349e9947a45bc609bb}{ana::SBNOsc::cut2b}
+\item 
+THStack $\ast$ \hyperlink{namespaceana_1_1SBNOsc_abee8fcfad8f7a669abab543ecb154c40}{ana::SBNOsc::cut2b\_\-stack}
+\item 
+std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_afeea6a75b46adcbda7b0a958a3481c57}{ana::SBNOsc::pi2gamma}
+\item 
+THStack $\ast$ \hyperlink{namespaceana_1_1SBNOsc_a30d63f8aba0987e9f063a67cce396d97}{ana::SBNOsc::gamma2Stack}
+\item 
+std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_a95cef1471ba412cf64f93382ecf777ed}{ana::SBNOsc::visiblevertex}
+\item 
+THStack $\ast$ \hyperlink{namespaceana_1_1SBNOsc_ab0d2c7f96f4320254bbda9e0041e6a3e}{ana::SBNOsc::vertexstack}
+\item 
+std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_a8bedf9b350e32fa2630521a1eb2a3b3c}{ana::SBNOsc::dEdx\_\-gamma}
+\item 
+THStack $\ast$ \hyperlink{namespaceana_1_1SBNOsc_a8edd8b5017a133cdd3e468899e0f7a5f}{ana::SBNOsc::dEdx\_\-gammastack}
+\item 
+std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_a0c37526999b8777b80e9324b335de4a9}{ana::SBNOsc::fig11}
+\item 
+THStack $\ast$ \hyperlink{namespaceana_1_1SBNOsc_adadc17855404843a6eb2a4306e22a460}{ana::SBNOsc::fig11stack}
+\item 
+TH1D $\ast$ \hyperlink{namespaceana_1_1SBNOsc_a8b644de838352477b63ffdd383f6c253}{ana::SBNOsc::dEdx}
+\item 
+std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_ab49147463b012e19132ce3747551ddfd}{ana::SBNOsc::dEdx\_\-2}
+\item 
+THStack $\ast$ \hyperlink{namespaceana_1_1SBNOsc_ab1c4aa783d9a2387391c600f3988fac5}{ana::SBNOsc::dEdx\_\-2\_\-stack}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+SBN nue selection.
+
+Author: 
