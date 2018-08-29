@@ -148,8 +148,8 @@ void NueSelection::Initialize(Json::Value* config) {
   vertexDist_reco = InitializeHists(60,0,10,2,"nuegc_reco",rng,false);
   recoVD_stack = new THStack("recoVD_stack","dist.from #nu vertex;dist(cm);count");
 
-  nuE_vs_reco = new TH2D("nuE_vs_reco","truth v. reco E_#nu;E_#nu (GeV);Reconstructed E_#nu (GeV)", 30, 0,5,30,0,5); 
-  nuereco_type = Initialize2DHists(30,0,5,60,0,10,10, "interaction type", rng);
+  nuE_vs_reco = new TH2D("nuE_vs_reco","truth v. reco E_#nu;E_#nu (GeV);Reconstructed E_#nu (GeV)", 12, 0,2,12,0,2); 
+  nuereco_type = Initialize2DHists(12,0,2,12,0,2,10, "interaction type", rng);
   nuereco_stack = new THStack("nuereco_stack","truth v. reco E_#nu;E_#nu (GeV);Reconstructed E_#nu (GeV)");
 
   showerE = InitializeHists(60,0,1000,2,"assn",rng,false);

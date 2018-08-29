@@ -59,6 +59,7 @@ void nue_prelim(){
   THStack* vertexDist_reco = (THStack*)nue->Get("recoVD_stack");
 
   //Draw histograms
+  /*
   TCanvas* shcanv = new TCanvas("shcanv","shcanv",800,800);
   shAssns->Draw();
   CreateNamedLegend("shower assns",shAssns,{"showers assoc. w/ #nu", "showers not assoc. w/ #nu"},false)->Draw();
@@ -74,10 +75,9 @@ void nue_prelim(){
   distcanv->cd(2);
   vertexDist_truth->Draw();
   CreateNamedLegend("",vertexDist_truth,{"true #nu_e CC tr+sh","photon showers","cosmic rays"},false)->Draw();
-  
+  */ 
   TCanvas *energycanv = new TCanvas("energycanv","energycanv",800,800);
-  nue_vs_reco->SetBins(60,0,10,60,0,10);
-  nue_vs_reco->Draw();
+  nue_vs_reco->Draw("colz");
   
   TCanvas *nutypecanv = new TCanvas("nutypecanv","nutypecanv",1800,1350);
   nutypecanv->Divide(4,3);
@@ -85,9 +85,7 @@ void nue_prelim(){
   for(auto obj : *nuereco_type_stack->GetHists()){
     TH1D* hist = (TH1D*) obj;
     nutypecanv->cd(count);
-    hist->Draw();
-    hist->SetBins(60,0,10, 42,0,7);
-    //hist->SetBins(30,0,5,30,0,5);
+    hist->Draw("colz");
     if(count==1)hist->SetName("CCQE");
     if(count==2)hist->SetName("NCQE");
     if(count==3)hist->SetName("CCRes");
