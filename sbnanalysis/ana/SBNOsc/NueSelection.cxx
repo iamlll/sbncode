@@ -1,3 +1,11 @@
+/**
+ * \file NueSelection.cxx
+ *
+ * SBN nu_e selection and helper functions.
+ *
+ * Author: Lisa Lin
+ */
+
 #include <iostream>
 #include <vector>
 #include <TH2D.h>
@@ -25,6 +33,15 @@ namespace ana {
   namespace SBNOsc {
 
 NueSelection::NueSelection() : SelectionBase(), fEventCounter(0), fNuCount(0) {}
+
+/** 
+ * Assigns random colors to a vector of histograms.
+ *
+ * \param hists A vector of 1-D histograms
+ * \param rng a random number generator of type Mersenne Twister
+ * \param fill Whether or not the histograms are assigned fill colors or line colors; "true" will give them fill colors, while "false" will give them line colors
+ * \return The input vector of hists, updated with colors!
+ */
 
 std::vector<TH1D*> ColorFill(std::vector<TH1D*> hists, std::mt19937 rng, bool fill){
   //random number distribution in range [0,11]
@@ -84,19 +101,37 @@ std::vector<TH1D*> ColorFill(std::vector<TH1D*> hists, std::mt19937 rng, bool fi
    return hists;
 }
 
+/**
+ * Initializes a vector of 1-D histograms containing doubles.
+ *
+ * \param nbins the number of bins
+ * \param lowX the minimum x-value
+ * \param highX the maximum x-value
+ * \param size how many histograms the vector will contain
+ * \param baseTitle the name to be given to each histogram
+ * \param rng A random number generator
+ * \param fill True will give each histogram fill colors, False gives each line colors
+ * \return a vector of 1-D histograms
+ */
 std::vector<TH1D*> InitializeHists(int nbins, double lowX, double highX, int size, std::string baseTitle, std::mt19937 rng, bool fill){
    std::vector<TH1D*> hists;
    char buffer[20];
    for(int i=0;i<size;i++){
       char* cstr = new char [baseTitle.length()+1];
       std::strcpy (cstr, baseTitle.c_str());
-      std::sprintf(buffer, "%s%d", cstr, i); //in this case, using i to denote 1 (true = events that passed the cut) vs 0 (false)
+      std::sprintf(buffer, "%s%d", cstr, i); 
       hists.push_back(new TH1D(buffer,"",nbins,lowX,highX));
    }
    hists = ColorFill(hists, rng, fill);
    return hists;
 }
 
+/**
+ * Add a vector of histograms to a stacked histogram, and write the stack to an output file.
+ *
+ * \param vec A vector of 1-D histograms
+ * \param stack A stacked histogram object
+ */
 void WriteHists(std::vector<TH1D*> vec, THStack* stack){
   for(size_t i=0; i< vec.size(); i++){
     stack->Add(vec[i]);
@@ -152,19 +187,34 @@ void NueSelection::Initialize(Json::Value* config) {
   hello();
 }
 
-/** Returns whether the particle is within the fiducial volume of the detector */
+/** 
+ * Returns whether the particle is within the fiducial volume of SBND.
+ *
+ * \param pos the 4-vector position of the particle
+ * \return True if the particle is within the fiducial vol, False if not
+ */
 bool AnybodyHome_SBND(TLorentzVector pos){
    if(((-199.15+25 < pos.X() && pos.X() < -2.65-25) || (2.65+25 < pos.X() && pos.X() < 199.15-25)) && (-200+25 < pos.Y() && pos.Y() < 200-25) && (0+25 < pos.Z() && pos.Z() < 500-25)) return true;
    else return false;
 }
 
+/**
+ * Find the distance between two particles
+ *
+ * \param a The position vector of a particle
+ * \param b The position vector of the second particle
+ * \return the distance between the two particle positions
+ */
 double FindDistance(TLorentzVector a, TLorentzVector b){
   auto distance = TMath::Sqrt(TMath::Power(a.X()-b.X(),2) + TMath::Power(a.Y()-b.Y(),2) + TMath::Power(a.Z()-b.Z(),2));
   return distance;
 }
 
 /*
- * reconstructed neutrino energy based on cross-section for CCQE interactions w/ heavy nuclei
+ * Find reconstructed neutrino energy based on cross-section for CCQE interactions with heavy nuclei, for a nu_e interaction
+ *
+ * \param mcshower the resulting shower from an electron neutrino interaction
+ * \return the reconstructed energy
  */
 double FindRecoEnergy_nue(sim::MCShower mcshower){
   double m_n = 939.565; //neutron mass, in MeV
@@ -179,6 +229,12 @@ double FindRecoEnergy_nue(sim::MCShower mcshower){
   return reco_energy;
 }
 
+/*
+ * Find reconstructed neutrino energy based on cross-section for CCQE interactions with heavy nuclei, mistaking a track-leaving particle for a nu_e interaction, i.e. a nu_mu CC event
+ *
+ * \param mctrack mctrack the resulting shower from an electron neutrino interaction
+ * \return the reconstructed energy
+ */
 double FindRecoEnergy_nue(sim::MCTrack mctrack){
   double m_n = 939.565; //neutron mass, in MeV
   double m_p = 938.272; //proton mass, in MeV
@@ -191,6 +247,13 @@ double FindRecoEnergy_nue(sim::MCTrack mctrack){
   reco_energy /= 1000; //convert from MeV to GeV
   return reco_energy;
 }
+
+/*
+ * Find reconstructed neutrino energy based on cross-section for CCQE interactions with heavy nuclei, for a nu_mu interaction
+ *
+ * \param mctrack the resulting track from a muon neutrino interaction
+ * \return the reconstructed energy
+ */
 
 double FindRecoEnergy_numu(sim::MCTrack mctrack){
   double m_n = 939.565; //neutron mass, in MeV
@@ -205,10 +268,15 @@ double FindRecoEnergy_numu(sim::MCTrack mctrack){
   return reco_energy;
 }
 
+/**
+ * Match the entire event's produced tracks to a specific neutrino vertex (within 5 cm of interaction vertex)
+ *
+ * \param nuVertex the neutrino event vertex
+ * \param mctracks all generated tracks of the event
+ * \return a vector containing all MCTrack objects "associated" with the given neutrino vertex
+ */
 std::vector<sim::MCTrack> FindRelevantTracks(TLorentzVector nuVertex, std::vector<sim::MCTrack> mctracks){
   std::vector<sim::MCTrack> relTracks;
-  //iterate through only each neutrino's "associated" tracks (within 5 cm of neutrino interaction vertex)
-  //(we're cheating - it's okay)
   for(size_t r=0;r<mctracks.size();r++){
     auto const& mctrack = mctracks.at(r);
     if(FindDistance(mctrack.Start().Position(),nuVertex)<=5){
@@ -218,19 +286,32 @@ std::vector<sim::MCTrack> FindRelevantTracks(TLorentzVector nuVertex, std::vecto
   return relTracks;
 }
 
+/**
+ * Match the entire event's produced showers to a specific neutrino vertex (within 5 cm of interaction vertex)
+ *
+ * \param nuVertex the neutrino event vertex
+ * \param mcshowers all generated showers of the event
+ * \return a vector containing all MCShower objects "associated" with the given neutrino vertex
+ */
 std::vector<sim::MCShower> FindRelevantShowers(TLorentzVector nuVertex, std::vector<sim::MCShower> mcshowers){
   std::vector<sim::MCShower> relShowers;
-  //iterate through only each neutrino's "associated" showers (within 5 cm of neutrino interaction vertex)
   for(size_t s=0;s<mcshowers.size();s++){
       auto const& mcshower = mcshowers.at(s);
       if(FindDistance(mcshower.Start().Position(),nuVertex)<=5){
-        //shower associated with neutrino interaction
         relShowers.push_back(mcshower);
       }
     }
     return relShowers;
   }
 
+/**
+ * Find the parent particle of the neutrino that produced the specified particle shower.
+ *
+ * \param mcflux the upstream information about the neutrino generation parameters, including neutrino parentage
+ * \param mctruth the neutrino truth information
+ * \param mcshower the showering particle
+ * \return The neutrino parent PDG code 
+ */
 int LinkShower_HadronParent(simb::MCFlux mcflux, simb::MCTruth mctruth, sim::MCShower mcshower){
   int parent = 0;
   if(mctruth.GetNeutrino().Lepton().PdgCode()==mcshower.PdgCode()){
@@ -241,8 +322,11 @@ int LinkShower_HadronParent(simb::MCFlux mcflux, simb::MCTruth mctruth, sim::MCS
   return parent;
 }
 
-/*
- * Find active track length (track length w/in fid vol) of the track
+/**
+ * Find active track length (within fiducial vol) of a particle.
+ *
+ * \param mctrack The track left by a particle
+ * \return How far the particle traveled inside the fiducial volume of the detector
  */
 double ActiveTrackLength(sim::MCTrack mctrack){
   double tracklength = 0.0;
@@ -257,8 +341,14 @@ double ActiveTrackLength(sim::MCTrack mctrack){
   return tracklength;
 }
 
-/*
+/**
  * nu_e CC CUT 1 IMPLEMENTATION: nu_e CC signal, 80% efficiency
+ *
+ * \param mctruth the truth info of the neutrino
+ * \param fRelTracks vector of particle tracks within 5 cm of the neutrino interaction vertex
+ * \param fRelShowers vector of particle showers converting within 5 cm of the neutrino interaction vertex
+ * \param fCut1 Vector of histograms of cuts being applied
+ * \param rng random number generator
  */
 void Cut1(simb::MCTruth mctruth, std::vector<sim::MCTrack> fRelTracks,std::vector<sim::MCShower> fRelShowers, std::vector<TH1D*> fCut1, std::mt19937 rng){
   std::uniform_int_distribution<std::mt19937::result_type> dist100(0,99); //distribution in range [0, 99]
@@ -291,6 +381,16 @@ void Cut1(simb::MCTruth mctruth, std::vector<sim::MCTrack> fRelTracks,std::vecto
   }
 }
 
+/**
+ * Selection of nu_e candidates using CCQE reconstructed energy
+ *
+ * \param mcflux Upstream information about the neutrino
+ * \param mctruth truth-level information about the neutrino
+ * \param mcshowers all showers in the generated event
+ * \param fCut1 the vector of histograms depicting the cuts made 
+ * \param fig11 A vector of histograms attempting to reconstruct the SBN Proposal's Figure 11
+ * \param rng random number generator
+ */
 void Cut1_reco(simb::MCFlux mcflux, simb::MCTruth mctruth, std::vector<sim::MCShower> mcshowers, std::vector<TH1D*> fCut1, std::vector<TH1D*> fig11, std::mt19937 rng){
   std::uniform_int_distribution<std::mt19937::result_type> dist100(0,99); //distribution in range [0, 99]
   int shcount = 0; 
@@ -298,7 +398,7 @@ void Cut1_reco(simb::MCFlux mcflux, simb::MCTruth mctruth, std::vector<sim::MCSh
   for(size_t i=0;i<mcshowers.size();i++){
     auto mcshower = mcshowers.at(i);
     auto energy = FindRecoEnergy_nue(mcshower);
-    //all events w/ at least 1 matched shower above 200 MeV
+    //all neutrino events w/ at least 1 matched shower above 200 MeV
     if(mcshower.Start().E() > 200){
       shcount++;
       if(shcount==1) fCut1[0]->Fill(energy,1);
@@ -325,8 +425,15 @@ void Cut1_reco(simb::MCFlux mcflux, simb::MCTruth mctruth, std::vector<sim::MCSh
   }
 } 
 
-/*
+/**
  * nu_e CC CUT 2 IMPLEMENTATION: NC photon production
+ *
+ * \param nu the neutrino whose interaction is currently being processed
+ * \param fRelTracks vector of MCTracks associated with the neutrino interaction
+ * \param fRelShowers vector of MCShowers associated w/ nu interaction
+ * \param hists vector of histograms containing plots of cuts for the NC photon production cut
+ * \param fig11 vector of 1D histograms replicating Figure 11 in the SBN proposal
+ * \param rng random number generator
  */
 void Cut2(simb::MCNeutrino nu, std::vector<sim::MCTrack> fRelTracks, std::vector<sim::MCShower> fRelShowers, std::vector<TH1D*> hists, std::vector<TH1D*> fig11, std::mt19937 rng){
   std::uniform_int_distribution<std::mt19937::result_type> dist100(0,99); //distribution in range [0, 99]
@@ -443,7 +550,14 @@ void Cut2(simb::MCNeutrino nu, std::vector<sim::MCTrack> fRelTracks, std::vector
 } 
 
 /*
- * nu_e CC CUT 3 IMPLEMENTATION
+ * nu_e CC CUT 3 IMPLEMENTATION: nu_mu CC background
+ *
+ * \param mctruth the truth info of the neutrino
+ * \param fRelTracks vector of particle tracks within 5 cm of the neutrino interaction vertex
+ * \param fRelShowers vector of particle showers converting within 5 cm of the neutrino interaction vertex
+ * \param hists vector of histograms containing plots of cuts for the nu_mu CC background cut
+ * \param fig11 vector of 1D histograms replicating Figure 11 in the SBN proposal
+ * \param rng random number generator
  */
 void Cut3(simb::MCTruth mctruth, std::vector<sim::MCTrack> fRelTracks, std::vector<sim::MCShower> fRelShowers, std::vector<TH1D*> hists, std::vector<TH1D*> fig11, std::mt19937 rng){
   if(mctruth.GetNeutrino().Nu().PdgCode()==14 && mctruth.GetNeutrino().CCNC()==0){
@@ -463,7 +577,6 @@ void Cut3(simb::MCTruth mctruth, std::vector<sim::MCTrack> fRelTracks, std::vect
           //if only one shower associated with the CC event vertex 
           if(ct==1){
             //run Cut 2 photon selection criteria, events that are not rejected are retained as BG for nu_e CC sample.
-            //I guess only cuts 2+3 (dEdx and produced charged hadron activity) are relevant?
             bool reject = false; 
             bool visible = false;
             double hadronE = 0.0;

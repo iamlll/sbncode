@@ -94,10 +94,12 @@ void nue_cuts(){
   cut2b->Draw("nostack");
   CreateNamedLegend("Conversion gap cut", cut2b, {"All #nu events","visible #nu events","rejected from conversion gap cut"},false)->Draw();
   */
+  /*
   TCanvas* dEdxcanv_gamma = new TCanvas("dEdxcanv_gamma","gamma dEdx cut canv",800,800);
   THStack* dEdx_gamma = (THStack*)nue->Get("gammastack");
   dEdx_gamma->Draw("nostack");
   CreateNamedLegend("dEdx cut", dEdx_gamma, {"all #gamma showers w/in 5 cm","#gamma showers from unrejected #nu event","# #gamma showers passing dE/dx cut"}, false)->Draw();
+  */
   /*
   THStack* cut3 = (THStack*)nue->Get("cut3stack");
   TCanvas* c3 = new TCanvas("c3","c3",800,800);

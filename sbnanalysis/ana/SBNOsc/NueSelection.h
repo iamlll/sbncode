@@ -6,7 +6,7 @@
  *
  * SBN nue selection.
  *
- * Author: 
+ * Author: Lisa Lin
  */
 
 #include <iostream>
@@ -67,11 +67,11 @@ protected:
   art::InputTag fShowerTag;//MCShower
   double fdEdx;
 
-  /** vectors */
+  /** Matched (within 5 cm) shower and track vectors */
   std::vector<sim::MCTrack> fRelTracks; //MCTracks within 5 cm of neutrino interaction vertex
   std::vector<sim::MCShower> fRelShowers; //MCShowers within 5 cm of neutrino interaction vertex
 
-  /**histograms!*/
+  /** Histograms of cuts */
   std::vector<TH1D*> fCut1; //cuts for selection criteria nu_e CC electron with E_e > 200 MeV
   THStack* cut1stack;
   std::vector<TH1D*> fCut2;
