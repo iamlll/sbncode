@@ -1,0 +1,112 @@
+\hypertarget{NueSelection_8h}{
+\section{NueSelection.h File Reference}
+\label{NueSelection_8h}\index{NueSelection.h@{NueSelection.h}}
+}
+{\ttfamily \#include $<$iostream$>$}\par
+{\ttfamily \#include \char`\"{}canvas/Utilities/InputTag.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}core/SelectionBase.hh\char`\"{}}\par
+{\ttfamily \#include \char`\"{}core/Event.hh\char`\"{}}\par
+{\ttfamily \#include \char`\"{}lardataobj/MCBase/MCShower.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}nusimdata/SimulationBase/MCTruth.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}lardataobj/MCBase/MCTrack.h\char`\"{}}\par
+{\ttfamily \#include $<$random$>$}\par
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classana_1_1SBNOsc_1_1NueSelection}{ana::SBNOsc::NueSelection}
+\begin{DoxyCompactList}\small\item\em Electron neutrino event selection. \item\end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{namespaceana_1_1SBNOsc_adabde93df02e88c081f79f1e98052f59}{
+art::InputTag \hyperlink{namespaceana_1_1SBNOsc_adabde93df02e88c081f79f1e98052f59}{ana::SBNOsc::fTrackTag}}
+\label{namespaceana_1_1SBNOsc_adabde93df02e88c081f79f1e98052f59}
+
+\begin{DoxyCompactList}\small\item\em art tag for MCTrack information \item\end{DoxyCompactList}\item 
+\hypertarget{namespaceana_1_1SBNOsc_add9629697b222d44721995afd2fa694d}{
+art::InputTag \hyperlink{namespaceana_1_1SBNOsc_add9629697b222d44721995afd2fa694d}{ana::SBNOsc::fShowerTag}}
+\label{namespaceana_1_1SBNOsc_add9629697b222d44721995afd2fa694d}
+
+\begin{DoxyCompactList}\small\item\em art tag for MCShower information \item\end{DoxyCompactList}\item 
+std::vector$<$ sim::MCTrack $>$ \hyperlink{namespaceana_1_1SBNOsc_a91abcb43a0813753bf8d88336515df12}{ana::SBNOsc::fRelTracks}
+\begin{DoxyCompactList}\small\item\em MCTracks within 5 cm of neutrino interaction vertex. \item\end{DoxyCompactList}\item 
+\hypertarget{namespaceana_1_1SBNOsc_a835384228e9ece629d6af6a74abfadeb}{
+std::vector$<$ sim::MCShower $>$ \hyperlink{namespaceana_1_1SBNOsc_a835384228e9ece629d6af6a74abfadeb}{ana::SBNOsc::fRelShowers}}
+\label{namespaceana_1_1SBNOsc_a835384228e9ece629d6af6a74abfadeb}
+
+\begin{DoxyCompactList}\small\item\em MCShowers within 5 cm of neutrino interaction vertex. \item\end{DoxyCompactList}\item 
+\hypertarget{namespaceana_1_1SBNOsc_add5bd746286f9d614ec881750271ca2a}{
+std::vector$<$ int $>$ \hyperlink{namespaceana_1_1SBNOsc_add5bd746286f9d614ec881750271ca2a}{ana::SBNOsc::fCodes}}
+\label{namespaceana_1_1SBNOsc_add5bd746286f9d614ec881750271ca2a}
+
+\begin{DoxyCompactList}\small\item\em unique neutrino interaction codes \item\end{DoxyCompactList}\item 
+double \hyperlink{namespaceana_1_1SBNOsc_ad474e53bdad4e796231c3ed3a55fb291}{ana::SBNOsc::fMinDist\_\-e}
+\begin{DoxyCompactList}\small\item\em minimum distance of electron showers from vertex \item\end{DoxyCompactList}\item 
+\hypertarget{namespaceana_1_1SBNOsc_a165811b8248c15233e9967b2656b40cc}{
+double \hyperlink{namespaceana_1_1SBNOsc_a165811b8248c15233e9967b2656b40cc}{ana::SBNOsc::fMaxDist\_\-e}}
+\label{namespaceana_1_1SBNOsc_a165811b8248c15233e9967b2656b40cc}
+
+\begin{DoxyCompactList}\small\item\em maximum distance of electron showers from vertex \item\end{DoxyCompactList}\item 
+\hypertarget{namespaceana_1_1SBNOsc_a169d2b7c8243c4bfca082f059e9bf4d8}{
+double \hyperlink{namespaceana_1_1SBNOsc_a169d2b7c8243c4bfca082f059e9bf4d8}{ana::SBNOsc::fMinDist\_\-g}}
+\label{namespaceana_1_1SBNOsc_a169d2b7c8243c4bfca082f059e9bf4d8}
+
+\begin{DoxyCompactList}\small\item\em minimum distance of photon showers from vertex \item\end{DoxyCompactList}\item 
+\hypertarget{namespaceana_1_1SBNOsc_aac97f59d75ea285b2505288a26509e56}{
+double \hyperlink{namespaceana_1_1SBNOsc_aac97f59d75ea285b2505288a26509e56}{ana::SBNOsc::fMaxDist\_\-g}}
+\label{namespaceana_1_1SBNOsc_aac97f59d75ea285b2505288a26509e56}
+
+\begin{DoxyCompactList}\small\item\em maximum distance of photon showers from vertex \item\end{DoxyCompactList}\item 
+std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_a24a163c9a62e9c96c9b43c32bddf2c85}{ana::SBNOsc::prelimCuts}
+\begin{DoxyCompactList}\small\item\em preliminary cut hist \item\end{DoxyCompactList}\item 
+\hypertarget{namespaceana_1_1SBNOsc_a8b96b08f09bcd5225bd7949df79a7502}{
+THStack $\ast$ \hyperlink{namespaceana_1_1SBNOsc_a8b96b08f09bcd5225bd7949df79a7502}{ana::SBNOsc::prelim\_\-stack\_\-nue}}
+\label{namespaceana_1_1SBNOsc_a8b96b08f09bcd5225bd7949df79a7502}
+
+\begin{DoxyCompactList}\small\item\em stacked histogram for preliminary cuts \item\end{DoxyCompactList}\item 
+\hypertarget{namespaceana_1_1SBNOsc_af4e4b969a6428e3b676523bd980f71a2}{
+TH1D $\ast$ \hyperlink{namespaceana_1_1SBNOsc_af4e4b969a6428e3b676523bd980f71a2}{ana::SBNOsc::dist\_\-from\_\-vertex}}
+\label{namespaceana_1_1SBNOsc_af4e4b969a6428e3b676523bd980f71a2}
+
+\begin{DoxyCompactList}\small\item\em 1D histogram of \char`\"{}matched\char`\"{} track + shower distances from neutrino interaction vertex \item\end{DoxyCompactList}\item 
+\hypertarget{namespaceana_1_1SBNOsc_a6634c91739daa73521520f47f7f00b20}{
+std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_a6634c91739daa73521520f47f7f00b20}{ana::SBNOsc::vertexDist\_\-truth}}
+\label{namespaceana_1_1SBNOsc_a6634c91739daa73521520f47f7f00b20}
+
+\begin{DoxyCompactList}\small\item\em truth distances of electron and photon showers from neutrino interaction vertex \item\end{DoxyCompactList}\item 
+\hypertarget{namespaceana_1_1SBNOsc_af0d438eba1ad952eebc56634786f25e3}{
+THStack $\ast$ \hyperlink{namespaceana_1_1SBNOsc_af0d438eba1ad952eebc56634786f25e3}{ana::SBNOsc::truthVD\_\-stack}}
+\label{namespaceana_1_1SBNOsc_af0d438eba1ad952eebc56634786f25e3}
+
+\begin{DoxyCompactList}\small\item\em stacked histogram for differentiating e-\/ \& gamma shower distances from vertex \item\end{DoxyCompactList}\item 
+\hypertarget{namespaceana_1_1SBNOsc_a4ff13fa5c635f6f6e18ae0e617818d30}{
+TH2D $\ast$ \hyperlink{namespaceana_1_1SBNOsc_a4ff13fa5c635f6f6e18ae0e617818d30}{ana::SBNOsc::nuE\_\-vs\_\-reco}}
+\label{namespaceana_1_1SBNOsc_a4ff13fa5c635f6f6e18ae0e617818d30}
+
+\begin{DoxyCompactList}\small\item\em 2D histogram plotting neutrino energy vs reconstructed energy using CCQE interaction equation \item\end{DoxyCompactList}\item 
+\hypertarget{namespaceana_1_1SBNOsc_a7f1325bc04e77ec15773b73457d6836f}{
+std::vector$<$ TH2D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_a7f1325bc04e77ec15773b73457d6836f}{ana::SBNOsc::nuereco\_\-type}}
+\label{namespaceana_1_1SBNOsc_a7f1325bc04e77ec15773b73457d6836f}
+
+\begin{DoxyCompactList}\small\item\em differentiating between different neutrino interaction types to tell accuracy of CCQE eqn for reconstructed neutrino energies \item\end{DoxyCompactList}\item 
+\hypertarget{namespaceana_1_1SBNOsc_a5e5cb46ce07fc929fb9284e248405c31}{
+THStack $\ast$ \hyperlink{namespaceana_1_1SBNOsc_a5e5cb46ce07fc929fb9284e248405c31}{ana::SBNOsc::nuereco\_\-stack}}
+\label{namespaceana_1_1SBNOsc_a5e5cb46ce07fc929fb9284e248405c31}
+
+\begin{DoxyCompactList}\small\item\em stacked histogram for neutrino energy vs reconstructed energy plots, separated by neutrino interaction types \item\end{DoxyCompactList}\item 
+\hypertarget{namespaceana_1_1SBNOsc_a16d5661ad439c411d58c3e70cc7ce598}{
+std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_a16d5661ad439c411d58c3e70cc7ce598}{ana::SBNOsc::showerE}}
+\label{namespaceana_1_1SBNOsc_a16d5661ad439c411d58c3e70cc7ce598}
+
+\begin{DoxyCompactList}\small\item\em histogram of how many showers are \char`\"{}associated\char`\"{} with neutrino interactions (w/in 5 cm) \item\end{DoxyCompactList}\item 
+\hypertarget{namespaceana_1_1SBNOsc_a2c2edf71d8436d090b8a21bc784331c4}{
+THStack $\ast$ \hyperlink{namespaceana_1_1SBNOsc_a2c2edf71d8436d090b8a21bc784331c4}{ana::SBNOsc::showerE\_\-stack}}
+\label{namespaceana_1_1SBNOsc_a2c2edf71d8436d090b8a21bc784331c4}
+
+\begin{DoxyCompactList}\small\item\em stacked histogram for shower associations \item\end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+SBN nue selection.
+
+Author: 

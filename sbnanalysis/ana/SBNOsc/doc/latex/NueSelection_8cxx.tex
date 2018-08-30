@@ -1,0 +1,68 @@
+\hypertarget{NueSelection_8cxx}{
+\section{NueSelection.cxx File Reference}
+\label{NueSelection_8cxx}\index{NueSelection.cxx@{NueSelection.cxx}}
+}
+{\ttfamily \#include $<$iostream$>$}\par
+{\ttfamily \#include $<$vector$>$}\par
+{\ttfamily \#include $<$TH2D.h$>$}\par
+{\ttfamily \#include $<$TH1D.h$>$}\par
+{\ttfamily \#include $<$THStack.h$>$}\par
+{\ttfamily \#include $<$json/json.h$>$}\par
+{\ttfamily \#include \char`\"{}gallery/ValidHandle.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}canvas/Utilities/InputTag.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}nusimdata/SimulationBase/MCTruth.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}nusimdata/SimulationBase/MCFlux.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}nusimdata/SimulationBase/MCNeutrino.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}core/Event.hh\char`\"{}}\par
+{\ttfamily \#include \char`\"{}NueSelection.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}Utilities.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}lardataobj/MCBase/MCTrack.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}lardataobj/MCBase/MCShower.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}lardataobj/MCBase/MCStep.h\char`\"{}}\par
+{\ttfamily \#include $<$string$>$}\par
+{\ttfamily \#include $<$cstring$>$}\par
+{\ttfamily \#include $<$TLorentzVector.h$>$}\par
+{\ttfamily \#include \char`\"{}TVector3.h\char`\"{}}\par
+{\ttfamily \#include $<$random$>$}\par
+{\ttfamily \#include $<$fstream$>$}\par
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_aa40041630409c79b46793f85659e12ff}{ana::SBNOsc::ColorFill} (std::vector$<$ TH1D $\ast$ $>$ hists, std::mt19937 rng, bool fill)
+\item 
+std::vector$<$ TH1D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_a9562f13f1927dd6d87f47a116ea88773}{ana::SBNOsc::InitializeHists} (int nbins, double lowX, double highX, int size, std::string baseTitle, std::mt19937 rng, bool fill)
+\item 
+void \hyperlink{namespaceana_1_1SBNOsc_a95cf1192e7bd36e933fbb8333e88391a}{ana::SBNOsc::WriteHists} (std::vector$<$ TH1D $\ast$ $>$ vec, THStack $\ast$stack)
+\item 
+std::vector$<$ TH2D $\ast$ $>$ \hyperlink{namespaceana_1_1SBNOsc_a933e9a152ab8549175b5055fd0f26684}{ana::SBNOsc::Initialize2DHists} (int nbinsx, double lowX, double highX, int nbinsy, double lowY, double highY, int size, std::string baseTitle, std::mt19937 rng)
+\item 
+void \hyperlink{namespaceana_1_1SBNOsc_a6a862b1e4d7fcd5c2832b88d91fefaf3}{ana::SBNOsc::Write2DHists} (std::vector$<$ TH2D $\ast$ $>$ vec, THStack $\ast$stack)
+\item 
+bool \hyperlink{namespaceana_1_1SBNOsc_a7e1f4b48137c1022518fb8eaaf87c5b6}{ana::SBNOsc::AnybodyHome\_\-SBND} (TLorentzVector pos)
+\item 
+double \hyperlink{namespaceana_1_1SBNOsc_a3bcacb7d02055361a967634a2d0a4241}{ana::SBNOsc::FindDistance} (TLorentzVector a, TLorentzVector b)
+\item 
+double \hyperlink{namespaceana_1_1SBNOsc_abec8e35567f2cdc64d5dcff2ecdb84c7}{ana::SBNOsc::FindRecoEnergy\_\-nue} (sim::MCShower mcshower)
+\item 
+double \hyperlink{namespaceana_1_1SBNOsc_ab46ae3a2aa11ce84c3ee5c6a03eccf27}{ana::SBNOsc::FindRecoEnergy\_\-nue} (sim::MCTrack mctrack)
+\item 
+double \hyperlink{namespaceana_1_1SBNOsc_a3f759be55b0fe7e802a69f9282dccdb5}{ana::SBNOsc::FindRecoEnergy\_\-numu} (sim::MCTrack mctrack)
+\item 
+std::vector$<$ sim::MCTrack $>$ \hyperlink{namespaceana_1_1SBNOsc_a06684ac90b7f2450f87b5cebe46e63d3}{ana::SBNOsc::FindRelevantTracks} (TLorentzVector nuVertex, std::vector$<$ sim::MCTrack $>$ mctracks)
+\item 
+std::vector$<$ sim::MCShower $>$ \hyperlink{namespaceana_1_1SBNOsc_a89dd300b266b27181c851bdbbeb1c02f}{ana::SBNOsc::FindRelevantShowers} (TLorentzVector nuVertex, std::vector$<$ sim::MCShower $>$ mcshowers)
+\item 
+void \hyperlink{namespaceana_1_1SBNOsc_a7cdf14d356037c82a051dfa31fd94bf7}{ana::SBNOsc::PrelimCuts\_\-nue} (simb::MCNeutrino nu, std::vector$<$ sim::MCShower $>$ mcshowers, std::vector$<$ sim::MCTrack $>$ mctracks, std::vector$<$ TH1D $\ast$ $>$ prelimCuts)
+\item 
+void \hyperlink{namespaceana_1_1SBNOsc_a6a12dc09663ce810f7f6e9a12f2d1159}{ana::SBNOsc::DistFromNuVertex} (simb::MCNeutrino nu, std::vector$<$ sim::MCShower $>$ mcshowers, std::vector$<$ sim::MCTrack $>$ mctracks, TH1D $\ast$dist\_\-from\_\-vertex, std::vector$<$ TH1D $\ast$ $>$ vertexDist\_\-truth)
+\item 
+std::vector$<$ int $>$ \hyperlink{namespaceana_1_1SBNOsc_a53617b7395d57c2c5e86e905897ded66}{ana::SBNOsc::UniqueNuTypes} (std::vector$<$ int $>$ codes, simb::MCNeutrino nu)
+\item 
+void \hyperlink{namespaceana_1_1SBNOsc_af719bda3df7acb4f67ca30bd92a54615}{ana::SBNOsc::NuE\_\-vs\_\-RecoE} (simb::MCNeutrino nu, std::vector$<$ sim::MCShower $>$ fRelShowers, std::vector$<$ sim::MCTrack $>$ fRelTracks)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+SBN nu\_\-e selection and helper fxns.
+
+Author: Lisa Lin 

@@ -47,8 +47,8 @@ TLegend* CreateNamedLegend(string legTitle, THStack* stack, vector<string> title
 }  
 
 void nue_prelim(){
-  TFile* nue = new TFile("output_SBNOsc_NueSelection.root");
-  //TFile* nue = new TFile("prelimoutput.root");
+  //TFile* nue = new TFile("output_SBNOsc_NueSelection.root");
+  TFile* nue = new TFile("prelimoutput.root");
 
   THStack* shAssns = (THStack*)nue->Get("showerE_stack");
   TH2D* nue_vs_reco = (TH2D*)nue->Get("nuE_vs_reco");
