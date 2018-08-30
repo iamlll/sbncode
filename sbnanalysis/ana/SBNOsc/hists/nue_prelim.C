@@ -47,8 +47,8 @@ TLegend* CreateNamedLegend(string legTitle, THStack* stack, vector<string> title
 }  
 
 void nue_prelim(){
-  //TFile* nue = new TFile("output_SBNOsc_NueSelection.root");
-  TFile* nue = new TFile("prelimoutput.root");
+  TFile* nue = new TFile("output_SBNOsc_NueSelection.root");
+  //TFile* nue = new TFile("prelimoutput.root");
 
   THStack* shAssns = (THStack*)nue->Get("showerE_stack");
   TH2D* nue_vs_reco = (TH2D*)nue->Get("nuE_vs_reco");
@@ -59,7 +59,7 @@ void nue_prelim(){
   THStack* vertexDist_reco = (THStack*)nue->Get("recoVD_stack");
 
   //Draw histograms
-  /*
+  /* 
   TCanvas* shcanv = new TCanvas("shcanv","shcanv",800,800);
   shAssns->Draw();
   CreateNamedLegend("shower assns",shAssns,{"showers assoc. w/ #nu", "showers not assoc. w/ #nu"},false)->Draw();
@@ -67,7 +67,7 @@ void nue_prelim(){
   TCanvas* pcanv = new TCanvas("pcanv","pcanv",1000,1000);
   prelimCuts->Draw("nostack");  
   CreateNamedLegend("",prelimCuts,{"Total #nu interactions","Interactions in fid vol","true #nu_e CC interactions","#nu_e CC matched w/ shower","matched #nu_e CC w/ prim. e- shower"},false)->Draw();
-  
+  */
   TCanvas* distcanv = new TCanvas("distcanv","distcanv",1500,750);
   distcanv->Divide(2,1);
   distcanv->cd(1);
@@ -75,7 +75,8 @@ void nue_prelim(){
   distcanv->cd(2);
   vertexDist_truth->Draw();
   CreateNamedLegend("",vertexDist_truth,{"true #nu_e CC tr+sh","photon showers","cosmic rays"},false)->Draw();
-  */ 
+   
+  /*
   TCanvas *energycanv = new TCanvas("energycanv","energycanv",800,800);
   nue_vs_reco->Draw("colz");
   
@@ -98,4 +99,5 @@ void nue_prelim(){
     if(count==10)hist->SetName("MEC");
     count++;
   }
+  */
 }

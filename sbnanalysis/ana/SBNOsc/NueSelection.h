@@ -60,16 +60,23 @@ protected:
   unsigned fTotTracksShowers; //counts total num tracks and showers
 
   std::mt19937 rng;
+
   /** Configuration parameters */
   art::InputTag fTruthTag;  //!< art tag for MCTruth information
 };
   art::InputTag fTrackTag; //MCTrack
   art::InputTag fShowerTag;//MCShower
 
-  /** vectors **/
+  /** vectors */
   std::vector<sim::MCTrack> fRelTracks; //MCTracks within 5 cm of neutrino interaction vertex
   std::vector<sim::MCShower> fRelShowers; //MCShowers within 5 cm of neutrino interaction vertex
   std::vector<int>  fCodes;
+
+  /** Min + max dist of e- & gamma from neutrino vertex */
+  double fMinDist_e;
+  double fMaxDist_e;
+  double fMinDist_g;
+  double fMaxDist_g;
 
   /**histograms!*/
   std::vector<TH1D*> prelimCuts;

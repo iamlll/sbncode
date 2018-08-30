@@ -1,3 +1,11 @@
+/**
+ * \file NueSelection.cxx
+ *
+ * SBN nu_e selection and helper fxns.
+ *
+ * Author: Lisa Lin
+ */
+
 #include <iostream>
 #include <vector>
 #include <TH2D.h>
@@ -27,8 +35,15 @@ namespace ana {
 
 NueSelection::NueSelection() : SelectionBase(), fEventCounter(0), fNuCount(0) {}
 
+/** 
+ * Assigns random colors to a vector of histograms.
+ *
+ * \param hists A vector of 1-D histograms
+ * \param rng a random number generator of type Mersenne Twister
+ * \param fill Whether or not the histograms are assigned fill colors or line colors; "true" will give them fill colors, while "false" will give them line colors
+ * \return The input vector of hists, updated with colors!
+ */
 std::vector<TH1D*> ColorFill(std::vector<TH1D*> hists, std::mt19937 rng, bool fill){
-  //random number distribution in range [0,11]
   std::uniform_int_distribution<std::mt19937::result_type> color12(0,11);
   for(int i=0;i<hists.size();i++){
     bool color = true; //no repeated colors!
@@ -85,6 +100,18 @@ std::vector<TH1D*> ColorFill(std::vector<TH1D*> hists, std::mt19937 rng, bool fi
    return hists;
 }
 
+/**
+ * Initializes a vector of 1-D histograms containing doubles.
+ *
+ * \param nbins the number of bins
+ * \param lowX the minimum x-value
+ * \param highX the maximum x-value
+ * \param size how many histograms the vector will contain
+ * \param baseTitle the name to be given to each histogram
+ * \param rng A random number generator
+ * \param fill True will give each histogram fill colors, False gives each line colors
+ * \return a vector of 1-D histograms
+ */
 std::vector<TH1D*> InitializeHists(int nbins, double lowX, double highX, int size, std::string baseTitle, std::mt19937 rng, bool fill){
    std::vector<TH1D*> hists;
    char buffer[20];
@@ -98,6 +125,12 @@ std::vector<TH1D*> InitializeHists(int nbins, double lowX, double highX, int siz
    return hists;
 }
 
+/**
+ * Add a vector of histograms to a stacked histogram, and write the stack to an output file.
+ *
+ * \param vec A vector of 1-D histograms
+ * \param stack A stacked histogram object
+ */
 void WriteHists(std::vector<TH1D*> vec, THStack* stack){
   for(size_t i=0; i< vec.size(); i++){
     stack->Add(vec[i]);
@@ -105,6 +138,20 @@ void WriteHists(std::vector<TH1D*> vec, THStack* stack){
   stack->Write();
 }
 
+/**
+ * Initializes a vector of 2-D histograms containing doubles.
+ *
+ * \param nbinsx the number of bins on the x-axis
+ * \param lowX the minimum x-value
+ * \param highX the maximum x-value
+ * \param nbinsy the number of bins on the y-axis
+ * \param lowY the minimum y-value
+ * \param highY the maximum y-value
+ * \param size how many histograms the vector will contain
+ * \param baseTitle the name to be given to each histogram
+ * \param rng A random number generator
+ * \return a vector of 2-D histograms
+ */
 std::vector<TH2D*> Initialize2DHists(int nbinsx, double lowX, double highX, int nbinsy, double lowY, double highY, int size, std::string baseTitle, std::mt19937 rng){
    std::vector<TH2D*> hists;
    char buffer[20];
@@ -117,6 +164,12 @@ std::vector<TH2D*> Initialize2DHists(int nbinsx, double lowX, double highX, int 
    return hists;
 }
 
+/**
+ * Add a vector of histograms to a stacked histogram, and write the stack to an output file.
+ *
+ * \param vec A vector of 2-D histograms
+ * \param stack A stacked histogram object
+ */
 void Write2DHists(std::vector<TH2D*> vec, THStack* stack){
   for(size_t i=0; i< vec.size(); i++){
     stack->Add(vec[i]);
@@ -138,12 +191,18 @@ void NueSelection::Initialize(Json::Value* config) {
     fShowerTag = { (*config)["ExampleAnalysis"].get("MCShowerTag", "mcreco").asString() };
   }
 
+  //counters
+  fMinDist_e = 100;
+  fMaxDist_e = -1; 
+  fMinDist_g = 100;
+  fMaxDist_g = -1;
+
   // Make a histogram
   prelimCuts = InitializeHists(30,0,5,5,"nu interactions",rng,false);
   prelim_stack_nue = new THStack("prelim_stack_nue",";E_#nu (GeV);count");
 
-  dist_from_vertex = new TH1D("dist_from_vertex","Shower/track dist. from #nu vertex;Distance (cm);count",60,0,10);
-  vertexDist_truth = InitializeHists(25,0,20,3,"nuegc",rng,true);
+  dist_from_vertex = new TH1D("dist_from_vertex","Shower/track dist. from #nu vertex;Distance (cm);count",50,0,0.1);
+  vertexDist_truth = InitializeHists(50,0,0.1,3,"nuegc",rng,true);
   truthVD_stack = new THStack("truthVD_stack","dist. from #nu vertex;dist(cm);count");
   vertexDist_reco = InitializeHists(60,0,10,2,"nuegc_reco",rng,false);
   recoVD_stack = new THStack("recoVD_stack","dist.from #nu vertex;dist(cm);count");
@@ -158,20 +217,35 @@ void NueSelection::Initialize(Json::Value* config) {
   hello();
 }
 
-/** Returns whether the particle is within the fiducial volume of the detector */
+/** 
+ * Returns whether the particle is within the fiducial volume of SBND.
+ *
+ * \param pos the 4-vector position of the particle
+ * \return True if the particle is within the fiducial vol, False if not
+ */
 bool AnybodyHome_SBND(TLorentzVector pos){
    if(((-199.15+25 < pos.X() && pos.X() < -2.65-25) || (2.65+25 < pos.X() && pos.X() < 199.15-25)) && (-200+25 < pos.Y() && pos.Y() < 200-25) && (0+25 < pos.Z() && pos.Z() < 500-25)) return true;
    else return false;
 }
 
+/**
+ * Find the distance between two particles
+ *
+ * \param a The position vector of a particle
+ * \param b The position vector of the second particle
+ * \return the distance between the two particle positions
+ */
 double FindDistance(TLorentzVector a, TLorentzVector b){
   auto distance = TMath::Sqrt(TMath::Power(a.X()-b.X(),2) + TMath::Power(a.Y()-b.Y(),2) + TMath::Power(a.Z()-b.Z(),2));
   return distance;
 }
 
 /**
- * * reconstructed neutrino energy based on cross-section for CCQE interactions w/ heavy nuclei
- * */
+ * Find reconstructed neutrino energy based on cross-section for CCQE interactions with heavy nuclei, for a nu_e interaction
+ *
+ * \param mcshower the resulting shower from an electron neutrino interaction
+ * \return the reconstructed energy
+ */
 double FindRecoEnergy_nue(sim::MCShower mcshower){
   double m_n = 939.565; //neutron mass, in MeV
   double m_p = 938.272; //proton mass, in MeV
@@ -185,6 +259,12 @@ double FindRecoEnergy_nue(sim::MCShower mcshower){
   return reco_energy;
 }
 
+/**
+ * Find reconstructed neutrino energy based on cross-section for CCQE interactions with heavy nuclei, mistaking a track-leaving particle (muon) for a nu_e interaction, i.e. a nu_mu CC event
+ *
+ * \param mctrack mctrack the resulting shower from an electron neutrino interaction
+ * \return the reconstructed energy
+ */
 double FindRecoEnergy_nue(sim::MCTrack mctrack){
   double m_n = 939.565; //neutron mass, in MeV
   double m_p = 938.272; //proton mass, in MeV
@@ -198,6 +278,12 @@ double FindRecoEnergy_nue(sim::MCTrack mctrack){
   return reco_energy;
 }
 
+/**
+ * Find reconstructed neutrino energy based on cross-section for CCQE interactions with heavy nuclei, for a nu_mu interaction
+ *
+ * \param mctrack the resulting track from a muon neutrino interaction
+ * \return the reconstructed energy
+ */
 double FindRecoEnergy_numu(sim::MCTrack mctrack){
   double m_n = 939.565; //neutron mass, in MeV
   double m_p = 938.272; //proton mass, in MeV
@@ -211,10 +297,15 @@ double FindRecoEnergy_numu(sim::MCTrack mctrack){
   return reco_energy;
 }
 
+/**
+ * Match the entire event's produced tracks to a specific neutrino vertex (within 5 cm of interaction vertex)
+ *
+ * \param nuVertex the neutrino event vertex
+ * \param mctracks all generated tracks of the event
+ * \return a vector containing all MCTrack objects "associated" with the given neutrino vertex
+ */
 std::vector<sim::MCTrack> FindRelevantTracks(TLorentzVector nuVertex, std::vector<sim::MCTrack> mctracks){
   std::vector<sim::MCTrack> relTracks;
-  //iterate through only each neutrino's "associated" tracks + showers (within 5 cm of neutrino interaction vertex)
-  //(we're cheating - it's okay)
   for(size_t r=0;r<mctracks.size();r++){
     auto const& mctrack = mctracks.at(r);
     if(FindDistance(mctrack.Start().Position(),nuVertex)<=5){
@@ -224,21 +315,35 @@ std::vector<sim::MCTrack> FindRelevantTracks(TLorentzVector nuVertex, std::vecto
   return relTracks;
 }
 
+/**
+ * Match the entire event's produced showers to a specific neutrino vertex (within 5 cm of interaction vertex)
+ *
+ * \param nuVertex the neutrino event vertex
+ * \param mcshowers all generated showers of the event
+ * \return a vector containing all MCShower objects "associated" with the given neutrino vertex
+ */
 std::vector<sim::MCShower> FindRelevantShowers(TLorentzVector nuVertex, std::vector<sim::MCShower> mcshowers){
   std::vector<sim::MCShower> relShowers;
-  //iterate through only each neutrino's "associated" tracks + showers (within 5 cm of neutrino interaction vertex)
-    for(size_t s=0;s<mcshowers.size();s++){
-      auto const& mcshower = mcshowers.at(s);
-      if(FindDistance(mcshower.Start().Position(),nuVertex)<=5){
-        //shower associated with neutrino interaction
-        showerE[0]->Fill(mcshower.Start().E(), 1);
-        relShowers.push_back(mcshower);
-      }
-      else showerE[1]->Fill(mcshower.Start().E(),1);
+  for(size_t s=0;s<mcshowers.size();s++){
+    auto const& mcshower = mcshowers.at(s);
+    if(FindDistance(mcshower.Start().Position(),nuVertex)<=5){
+      //shower associated with neutrino interaction
+      showerE[0]->Fill(mcshower.Start().E(), 1);
+      relShowers.push_back(mcshower);
     }
-    return relShowers;
+    else showerE[1]->Fill(mcshower.Start().E(),1);
   }
+  return relShowers;
+}
 
+/**
+ * Make preliminary cut histograms, including total number neutrino interactions in fiducial volume, number of nu_e CC interactions, efficiency and purity given a signal definition of E_shower > 200 MeV + nu_e CC.
+ *
+ * \param mctruth the truth info of the neutrino
+ * \param mcshowers vector of showers of the event
+ * \param mctracks vector of tracks of the event
+ * \param prelimCuts vector of histograms in which to store plots of cuts
+ */
 void PrelimCuts_nue(simb::MCNeutrino nu, std::vector<sim::MCShower> mcshowers, std::vector<sim::MCTrack> mctracks, std::vector<TH1D*> prelimCuts){
   auto nuenergy = nu.Nu().E();
   auto nuVertex = nu.Nu().EndPosition();
@@ -278,12 +383,20 @@ void PrelimCuts_nue(simb::MCNeutrino nu, std::vector<sim::MCShower> mcshowers, s
   }
 }
 
+/**
+ * Find distances of tracks and showers from neutrino vertex, and plot.
+ *
+ * \param nu the neutrino whose interaction is currently being processed
+ * \param mcshowers vector of showers of the event
+ * \param mctracks vector of tracks of the event
+ * \param dist_from_vertex histogram of distances of tracks and showers from the neutrino interaction vertex
+ * \param vertexDist_truth vector of histograms differentiating electron and photon showers (+ cosmics, though there aren't any) distances from the interaction vertex
+ */
 void DistFromNuVertex(simb::MCNeutrino nu, std::vector<sim::MCShower> mcshowers, std::vector<sim::MCTrack> mctracks, TH1D* dist_from_vertex, std::vector<TH1D*> vertexDist_truth){
-  
   for(size_t a=0; a<mctracks.size();a++){
     auto mctrack = mctracks.at(a);
     auto dist = FindDistance(mctrack.Start().Position(), nu.Nu().EndPosition());
-    if(dist <= 20){
+    if(dist <= 20 && dist!=0){
       dist_from_vertex->Fill(dist, 1);
       if(mctrack.Origin()==simb::kCosmicRay){
         vertexDist_truth[2]->Fill(dist,1);
@@ -294,13 +407,17 @@ void DistFromNuVertex(simb::MCNeutrino nu, std::vector<sim::MCShower> mcshowers,
   for(size_t b=0; b<mcshowers.size();b++){
     auto mcshower = mcshowers.at(b);
     auto dist = FindDistance(mcshower.Start().Position(), nu.Nu().EndPosition());
-    if(dist <= 20){
+    if(dist <= 20 && dist !=0){
       dist_from_vertex->Fill(dist, 1);
       if(nu.Nu().PdgCode()==12 && nu.CCNC()==0 && mcshower.PdgCode()==11 && mcshower.Process()=="primary"){
         vertexDist_truth[0]->Fill(dist,1); //true nu_e CCNC
+        if(dist < fMinDist_e) fMinDist_e = dist;
+        if(fMaxDist_e < dist) fMaxDist_e = dist;
       }
       if(mcshower.PdgCode()==22){
         vertexDist_truth[1]->Fill(dist,1); //photons travel some distance away from neutrino vertex; distance has exponential distribution whose characteristic length is radiation length of the medium. For LAr, this characteristic length = 14 cm.
+        if(dist < fMinDist_g) fMinDist_g = dist;
+        if(fMaxDist_g < dist) fMaxDist_g = dist;
       }
       if(mcshower.Origin()==simb::kCosmicRay){
         vertexDist_truth[2]->Fill(dist,1);
@@ -310,11 +427,14 @@ void DistFromNuVertex(simb::MCNeutrino nu, std::vector<sim::MCShower> mcshowers,
 }
 
 /**
- * Return vector containing unique codes of all types of neutrino interactions
+ * Finds unique codes of all types of neutrino interactions
+ *
+ * \param codes vector containing unique neutrino interaction type codes
+ * \param nu the neutrino whose interaction is currently being processed
+ * \return Updated input vector containing unique interaction type codes
  */
 std::vector<int> UniqueNuTypes(std::vector<int> codes, simb::MCNeutrino nu){
   auto type = nu.Mode();
-  //create vector of unique interaction type codes
   if(codes.empty()){
     codes.push_back(type);
   }
@@ -326,6 +446,13 @@ std::vector<int> UniqueNuTypes(std::vector<int> codes, simb::MCNeutrino nu){
   return codes;
 }
 
+/**
+ * Fill in stacked histogram of neutrino energy vs reconstruction energy based off of CCQE equation, separating different neutrino interaction types.
+ *
+ * \param nu the neutrino whose interaction is currently being processed
+ * \param fRelTracks vector of MCTracks associated with the neutrino interaction
+ * \param fRelShowers vector of MCShowers associated w/ nu interaction
+ */
 void NuE_vs_RecoE(simb::MCNeutrino nu, std::vector<sim::MCShower> fRelShowers, std::vector<sim::MCTrack> fRelTracks){
   for(size_t a=0; a<fRelTracks.size();a++){
     auto mctrack = fRelTracks.at(a);
@@ -381,11 +508,17 @@ void NueSelection::Finalize() {
   nuE_vs_reco->Write();
   Write2DHists(nuereco_type, nuereco_stack);
   WriteHists(showerE, showerE_stack); 
+  /*
   std::cout << "Total num tracks+showers: " << fTotTracksShowers << std::endl;
   std::cout << "Neutrino interaction types: " << std::endl;
   for(int i=0; i<fCodes.size(); i++){
     std::cout << fCodes[i] << std::endl;
   }
+  */
+  std::cout << "Min dist of e- from nu vertex: " << fMinDist_e << std::endl;
+  std::cout << "Max dist of e- from nu vertex: " << fMaxDist_e << std::endl;
+  std::cout << "Min dist of gamma from nu vertex: " << fMinDist_g << std::endl;
+  std::cout << "Max dist of gamma from nu vertex: " << fMaxDist_g << std::endl;
 }
 
 bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Interaction>& reco) {
