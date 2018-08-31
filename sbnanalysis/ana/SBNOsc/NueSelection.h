@@ -17,6 +17,7 @@
 #include "nusimdata/SimulationBase/MCTruth.h"
 #include "lardataobj/MCBase/MCTrack.h"
 #include <random>
+#include <fstream>
 
 //Forward declarations
 class TH2D;
@@ -58,7 +59,8 @@ protected:
   unsigned fEventCounter;  //!< Count processed events
   unsigned fNuCount;  //!< Count num nu_e CCQE events
 
-  std::mt19937 rng;
+  std::mt19937 rng; //!< Mersenne Twister random number generator
+  std::ofstream myfile; //!< general file of gamma processes
 
   /** Configuration parameters */
   art::InputTag fTruthTag;  //!< art tag for MCTruth information
@@ -67,7 +69,8 @@ protected:
   art::InputTag fShowerTag;//MCShower
   double fdEdx;
 
-  /** Matched (within 5 cm) shower and track vectors */
+  /** vectors */
+  std::vector<std::string> gammaprocess; //!< vector of photon shower processes
   std::vector<sim::MCTrack> fRelTracks; //MCTracks within 5 cm of neutrino interaction vertex
   std::vector<sim::MCShower> fRelShowers; //MCShowers within 5 cm of neutrino interaction vertex
 

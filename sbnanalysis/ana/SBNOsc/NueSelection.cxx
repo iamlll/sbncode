@@ -7,6 +7,7 @@
  */
 
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <TH2D.h>
 #include <TH1D.h>
@@ -141,6 +142,7 @@ void WriteHists(std::vector<TH1D*> vec, THStack* stack){
 
 void NueSelection::Initialize(Json::Value* config) {
   rng.seed(std::random_device()());
+  myfile.open("distances.txt");
 
   // Load configuration parameters
   fTruthTag = { "generator" };
@@ -426,6 +428,30 @@ void Cut1_reco(simb::MCFlux mcflux, simb::MCTruth mctruth, std::vector<sim::MCSh
 } 
 
 /**
+ * Finds unique codes of all photon shower processes.
+ *
+ * \param codes vector containing unique codes
+ * \param mcshowers the vector containing the current event showers
+ * \return Updated input vector containing unique interaction type codes
+ */
+std::vector<std::string> UniqueGammaProcess(std::vector<std::string> codes, std::vector<sim::MCShower> mcshowers){
+  for(size_t i=0;i<mcshowers.size();i++){
+    if(mcshowers.at(i).PdgCode()==22){
+      auto process = mcshowers.at(i).Process();
+      if(codes.empty()){
+        codes.push_back(process);
+      }
+      else{
+        if(find(codes.begin(),codes.end(),process)==codes.end()){
+          codes.push_back(process);
+        }
+      }
+    }
+  }
+  return codes;
+}
+
+/**
  * nu_e CC CUT 2 IMPLEMENTATION: NC photon production
  *
  * \param nu the neutrino whose interaction is currently being processed
@@ -452,16 +478,17 @@ void Cut2(simb::MCNeutrino nu, std::vector<sim::MCTrack> fRelTracks, std::vector
   int momID;
   for(size_t n=0;n<fRelShowers.size();n++){
     auto const& mcshower = fRelShowers.at(n);
-    dEdx->Fill(mcshower.dEdx(),1);
-    
+    if(mcshower.dEdx()!=0){
+      dEdx->Fill(mcshower.dEdx(),1);
+      if(mcshower.PdgCode()==22) dEdx_2[0]->Fill(mcshower.dEdx(),1);
+      if(mcshower.PdgCode()==11) dEdx_2[1]->Fill(mcshower.dEdx(),1);
+    }
     if(mcshower.PdgCode()==22){
       pi2gamma[0]->Fill(mcshower.Start().E(),1); //all photon showers w/in 5 cm
       visiblevertex[0]->Fill(mcshower.Start().E(),1);
       dEdx_gamma[0]->Fill(mcshower.Start().E(),1);
-      dEdx_2[0]->Fill(mcshower.dEdx(),1);
     }
-    if(mcshower.PdgCode()==11) dEdx_2[1]->Fill(mcshower.dEdx(),1);
-
+    
     //leading photon shower produced by pi0 must have E_gamma > 200 MeV; 2nd photon shower must have E_gamma > 100 MeV
     if(mcshower.PdgCode()==22 && mcshower.MotherPdgCode()==111 && mcshower.MotherProcess()=="primary"){
       if(nKids==0){
@@ -515,7 +542,7 @@ void Cut2(simb::MCNeutrino nu, std::vector<sim::MCTrack> fRelTracks, std::vector
         visiblevertex[1]->Fill(mcshower.Start().E(),1); //how many photon showers from visible vertex
         nPhotonSh++;
         if(dist_from_vertex > 3){
-          visiblevertex[2]->Fill(mcshower.Start().E(),1); //how many photon showers converting more than 3 cm away from vertex
+          visiblevertex[2]->Fill(mcshower.Start().E(),1); //how many primary photon showers converting more than 3 cm away from vertex
           nfailed++;        
         } 
       } 
@@ -529,7 +556,7 @@ void Cut2(simb::MCNeutrino nu, std::vector<sim::MCTrack> fRelTracks, std::vector
   if(reject==false){
     for(size_t sh=0; sh<fRelShowers.size();sh++){
       auto const& mcshower = fRelShowers.at(sh);
-      if(mcshower.PdgCode()==22){
+      if(mcshower.PdgCode()==22 && mcshower.Process()=="primary"){
       dEdx_gamma[1]->Fill(mcshower.Start().E(),1); //total photon showers not rejected
         if(mcshower.dEdx()<fdEdx && mcshower.dEdx()!=0){
           hists[1]->Fill(nuE,1);
@@ -634,6 +661,7 @@ void Cut3(simb::MCTruth mctruth, std::vector<sim::MCTrack> fRelTracks, std::vect
 }
 
 void NueSelection::Finalize() {
+  myfile.close();
   fOutputFile->cd();
   WriteHists(fCut1, cut1stack);
   WriteHists(fCut1_reco, cut1stack_reco);
@@ -650,6 +678,10 @@ void NueSelection::Finalize() {
   dEdx->Write();
   WriteHists(dEdx_2, dEdx_2_stack);
   std::cout << "config param fdEdx = " << fdEdx << std::endl;
+  std::cout << "Photon shower processes: " << std::endl;
+  for(size_t i=0;i<gammaprocess.size();i++){
+    std::cout << gammaprocess[i] << std::endl;
+  }
 }
 
 bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Interaction>& reco) {
@@ -668,6 +700,8 @@ bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Int
     *ev.getValidHandle<std::vector<sim::MCTrack>>(fTrackTag);
   auto const& mcshowers = \
     *ev.getValidHandle<std::vector<sim::MCShower>>(fShowerTag);
+
+  gammaprocess = UniqueGammaProcess(gammaprocess, mcshowers);
 
   // Iterate through the neutrinos
   for (size_t i=0; i<mctruths.size(); i++) {
