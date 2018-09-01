@@ -49,7 +49,7 @@ TLegend* CreateNamedLegend(string legTitle, THStack* stack, vector<string> title
 void nue_cuts(){
   //TFile* nue = new TFile("nueoutput.root");
   TFile* nue = new TFile("output_SBNOsc_NueSelection.root"); 
-  
+/*  
   THStack* cut1 = (THStack*)nue->Get("cut1stack");
   THStack* cut1reco = (THStack*)nue->Get("cut1stack_reco");
   TCanvas* c1 = new TCanvas("c1","c1",2000,1000);
@@ -60,18 +60,20 @@ void nue_cuts(){
   c1->cd(2);
   cut1reco->Draw("nostack");  
   CreateNamedLegend("Cut 1, reconstructed E_#nu", cut1reco, {"ev w/ 1+ matched E_sh > 200 MeV","\" which are prim. e- sh","empty"},false)->Draw();
+*/
   
   THStack* fig11 = (THStack*)nue->Get("fig11stack");
   TCanvas* canv11 = new TCanvas("canv11", "canv11", 1000, 1000);
   fig11->Draw();
   CreateNamedLegend("", fig11, {"#mu->#nue","K+->#nue","K0->#nue","NC single #gamma", "#nu_mu CC"},false)->Draw();
   
-  
+/*  
   THStack* cut2 = (THStack*)nue->Get("cut2stack");
   TCanvas* c2 = new TCanvas("c2","c2",800,800);
   cut2->Draw();
   CreateNamedLegend("NC #gamma prod", cut2, {"event rejected","event passed"},true)->Draw();
-
+*/
+/*
   TCanvas* canv2a = new TCanvas("canv2a","2nd photon cut canv",1600,800);
   canv2a->Divide(2,1);
   canv2a->cd(1);
@@ -99,14 +101,14 @@ void nue_cuts(){
   THStack* dEdx_gamma = (THStack*)nue->Get("gammastack");
   dEdx_gamma->Draw("nostack");
   CreateNamedLegend("dEdx cut", dEdx_gamma, {"all #gamma showers w/in 5 cm","#gamma showers from unrejected #nu event","# #gamma showers passing dE/dx cut"}, false)->Draw();
-  
+*/
   
   THStack* cut3 = (THStack*)nue->Get("cut3stack");
   TCanvas* c3 = new TCanvas("c3","c3",800,800);
   cut3->Draw();
-  CreateNamedLegend("CC #nu_#mu", cut3, {"Failed #mu","Passed #mu"},true)->Draw();
+  CreateNamedLegend("CC #nu_#mu", cut3, {"Failed #mu","Passed #mu"},false)->Draw();
   
-  
+/*  
   TH1D* dEdx = (TH1D*)nue->Get("dEdx");
   THStack* dEdx_stack = (THStack*)nue->Get("showerStack");
   TCanvas* dEdxcanv = new TCanvas("dEdxcanv","dEdxcanv",2000,1000);
@@ -116,5 +118,5 @@ void nue_cuts(){
   dEdxcanv->cd(2);
   dEdx_stack->Draw();
   CreateNamedLegend("dEdx",dEdx_stack,{"#gamma","e"},false)->Draw();
-  
+*/  
 }  

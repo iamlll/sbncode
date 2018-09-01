@@ -103,7 +103,7 @@ std::vector<TH1D*> ColorFill(std::vector<TH1D*> hists, std::mt19937 rng, bool fi
 }
 
 /**
- * Initializes a vector of 1-D histograms containing doubles.
+ * Initializes a vector of 1-D histograms (fixed binning) containing doubles.
  *
  * \param nbins the number of bins
  * \param lowX the minimum x-value
@@ -124,6 +124,31 @@ std::vector<TH1D*> InitializeHists(int nbins, double lowX, double highX, int siz
       hists.push_back(new TH1D(buffer,"",nbins,lowX,highX));
    }
    hists = ColorFill(hists, rng, fill);
+   return hists;
+}
+
+/**
+ * Initializes a vector of 1-D histograms (variable binning) containing doubles.
+ *
+ * \param nbins the number of bins
+ * \param xbins an array of size [nbins+1] containing the locations of the desired bins.
+ * \param size how many histograms the vector will contain
+ * \param baseTitle the name to be given to each histogram
+ * \param rng A random number generator
+ * \param fill True will give each histogram fill colors, False gives each line colors
+ * \return a vector of 1-D histograms
+ */
+std::vector<TH1D*> InitializeHists_varbins(int nbins, std::vector<double> xbins, int size, std::string baseTitle, std::mt19937 rng, bool fill){
+   std::vector<TH1D*> hists;
+   double* binarray = &xbins[0];
+   char buffer[20];
+   for(int i=0;i<size;i++){
+      char* cstr = new char [baseTitle.length()+1];
+      std::strcpy (cstr, baseTitle.c_str());
+      std::sprintf(buffer, "%s%d", cstr, i); 
+      hists.push_back(new TH1D(buffer,"",nbins,binarray));
+   }
+   //hists = ColorFill(hists, rng, fill);
    return hists;
 }
 
@@ -178,7 +203,12 @@ void NueSelection::Initialize(Json::Value* config) {
   cut3stack = new THStack("cut3stack","CC #nu_#mu;E_#nu (GeV);count");
 
 
-  fig11 = InitializeHists(30,0,5, 5,"thing", rng, true);
+  fig11 = InitializeHists_varbins(11,{0.2,0.35,0.5,0.65,0.8,0.95,1.1,1.3,1.5,1.75,2,3}, 5,"thing", rng, true);
+  fig11[0]->SetFillColor(kGreen+3);
+  fig11[1]->SetFillColor(kGreen+2);
+  fig11[2]->SetFillColor(kGreen-7);
+  fig11[3]->SetFillColor(kOrange+1);
+  fig11[4]->SetFillColor(kBlue-9);
   fig11stack = new THStack("fig11stack",";Reconstructed Energy (GeV);Events/GeV");
 
 
@@ -198,6 +228,18 @@ void NueSelection::Initialize(Json::Value* config) {
 bool AnybodyHome_SBND(TLorentzVector pos){
    if(((-199.15+25 < pos.X() && pos.X() < -2.65-25) || (2.65+25 < pos.X() && pos.X() < 199.15-25)) && (-200+25 < pos.Y() && pos.Y() < 200-25) && (0+25 < pos.Z() && pos.Z() < 500-25)) return true;
    else return false;
+}
+
+/** 
+ * Returns whether the particle is within the active volume of SBND.
+ *
+ * \param pos the 4-vector position of the particle
+ * \return True if the particle is within the fiducial vol, False if not
+ */
+bool InActiveVol_SBND(TLorentzVector pos){
+   if(((-199.15 < pos.X() && pos.X() < -2.65) || (2.65 < pos.X() && pos.X() < 199.15)) && (-200 < pos.Y() && pos.Y() < 200) && (0 < pos.Z() && pos.Z() < 500)) return true;
+   else return false;
+  
 }
 
 /**
@@ -415,12 +457,12 @@ void Cut1_reco(simb::MCFlux mcflux, simb::MCTruth mctruth, std::vector<sim::MCSh
           }
           //muon parent
           if(LinkShower_HadronParent(mcflux,mctruth,mcshower)==13) fig11[0]->Fill(energy, 1);
-          //K0 parent
-          if(LinkShower_HadronParent(mcflux,mctruth,mcshower)==130 || LinkShower_HadronParent(mcflux,mctruth,mcshower)==310 || LinkShower_HadronParent(mcflux,mctruth,mcshower)==311) fig11[1]->Fill(energy, 1);
           //K+ parent 
           if(LinkShower_HadronParent(mcflux,mctruth,mcshower)==321){
-            fig11[2]->Fill(energy, 1);
+            fig11[1]->Fill(energy, 1);
           }
+          //K0 parent
+          if(LinkShower_HadronParent(mcflux,mctruth,mcshower)==130 || LinkShower_HadronParent(mcflux,mctruth,mcshower)==310 || LinkShower_HadronParent(mcflux,mctruth,mcshower)==311) fig11[2]->Fill(energy, 1);
         }
       } 
     }
@@ -452,6 +494,26 @@ std::vector<std::string> UniqueGammaProcess(std::vector<std::string> codes, std:
 }
 
 /**
+ * Finds unique codes of all neutrino hadron parent particle PDG codes.
+ *
+ * \param codes vector containing unique codes
+ * \param mcshowers the vector containing the current event showers
+ * \return Updated input vector containing unique parent codes
+ */
+std::vector<int> UniqueParents(std::vector<int> codes, simb::MCFlux mcflux){
+  auto parent = mcflux.fptype;
+  if(codes.empty()){
+    codes.push_back(parent);
+  }
+  else{
+    if(find(codes.begin(),codes.end(),parent)==codes.end()){
+      codes.push_back(parent);
+    }
+  }
+  return codes;
+}
+
+/**
  * nu_e CC CUT 2 IMPLEMENTATION: NC photon production
  *
  * \param nu the neutrino whose interaction is currently being processed
@@ -473,6 +535,8 @@ void Cut2(simb::MCNeutrino nu, std::vector<sim::MCTrack> fRelTracks, std::vector
 
   cut2a[0]->Fill(nuE,1); //all neutrino flux
   cut2b[0]->Fill(nuE,1);
+
+  /** SECONDARY PHOTON CUT */
 
   int nKids=0; //number of kids
   int momID;
@@ -507,7 +571,7 @@ void Cut2(simb::MCNeutrino nu, std::vector<sim::MCTrack> fRelTracks, std::vector
             pi2gamma[4]->Fill(mcshower.Start().E(), 1); //#2nd g-kids that pass the energy cut
             count++;
             //if the second photon converts (showers) within the active TPC, reject the event!
-            if(AnybodyHome_SBND(mcshower.Start().Position())==true){
+            if(InActiveVol_SBND(mcshower.Start().Position())==true){
               pi2gamma[5]->Fill(mcshower.Start().E(),1);
               reject=true;
               cut2a[1]->Fill(nuE,1);//rejected events from 2nd photon cut
@@ -519,9 +583,9 @@ void Cut2(simb::MCNeutrino nu, std::vector<sim::MCTrack> fRelTracks, std::vector
     }
   }
 
+  /** CONVERSION GAP CUT */
   for(size_t r=0;r<fRelTracks.size();r++){
     auto const& mctrack = fRelTracks.at(r);
-    //nu_e CC SELECTION CUT 2B
     //Look for charged hadron primary particles, i.e. NOT leptons, protons, pi0, or K0. Find energy total (>50 MeV to be visible)
     if(mctrack.PdgCode()!=11 && mctrack.PdgCode()!=13 && mctrack.PdgCode()!=15 && mctrack.PdgCode()!=111 && mctrack.PdgCode()!=130 && mctrack.PdgCode()!= 310 && mctrack.PdgCode()!=311 && mctrack.Process()=="primary"){
       double anarG = mctrack.Start().E(); //in MeV
@@ -538,11 +602,13 @@ void Cut2(simb::MCNeutrino nu, std::vector<sim::MCTrack> fRelTracks, std::vector
     for(size_t sh=0; sh<fRelShowers.size();sh++){
       auto const& mcshower = fRelShowers.at(sh);
       auto dist_from_vertex = FindDistance(mcshower.Start().Position(), nuVertex);
-      if(mcshower.PdgCode()==22){
-        visiblevertex[1]->Fill(mcshower.Start().E(),1); //how many photon showers from visible vertex
+      
+      //look at distances from neutrino vertex of primary photon showers and photons from pi0 decays (decay so promptly they are still in the struck nucleus)
+      if((mcshower.PdgCode()==22 && mcshower.Process()=="primary") || (mcshower.PdgCode()==22 && mcshower.MotherPdgCode()==111 && mcshower.MotherProcess()=="primary")){
+        visiblevertex[1]->Fill(mcshower.Start().E(),1); //how many photon showers from event with visible vertex
         nPhotonSh++;
         if(dist_from_vertex > 3){
-          visiblevertex[2]->Fill(mcshower.Start().E(),1); //how many primary photon showers converting more than 3 cm away from vertex
+          visiblevertex[2]->Fill(mcshower.Start().E(),1); //how many photon showers converting more than 3 cm away from vertex
           nfailed++;        
         } 
       } 
@@ -556,8 +622,8 @@ void Cut2(simb::MCNeutrino nu, std::vector<sim::MCTrack> fRelTracks, std::vector
   if(reject==false){
     for(size_t sh=0; sh<fRelShowers.size();sh++){
       auto const& mcshower = fRelShowers.at(sh);
-      if(mcshower.PdgCode()==22 && mcshower.Process()=="primary"){
-      dEdx_gamma[1]->Fill(mcshower.Start().E(),1); //total photon showers not rejected
+      if(mcshower.PdgCode()==22){
+        dEdx_gamma[1]->Fill(mcshower.Start().E(),1); //total photon showers not rejected
         if(mcshower.dEdx()<fdEdx && mcshower.dEdx()!=0){
           hists[1]->Fill(nuE,1);
           fig11[3]->Fill(FindRecoEnergy_nue(mcshower),1);
@@ -599,10 +665,11 @@ void Cut3(simb::MCTruth mctruth, std::vector<sim::MCTrack> fRelTracks, std::vect
           int ct=0; //counts how many primary showers are associated w/ vertex
           for(size_t s=0; s<fRelShowers.size();s++){
             auto const& mcshower = fRelShowers.at(s);
-            ct++;
+            if(mcshower.Process()=="primary") ct++;
           }
           //if only one shower associated with the CC event vertex 
           if(ct==1){
+            std::cout << "only one primary shower!" << std::endl;
             //run Cut 2 photon selection criteria, events that are not rejected are retained as BG for nu_e CC sample.
             bool reject = false; 
             bool visible = false;
@@ -638,7 +705,7 @@ void Cut3(simb::MCTruth mctruth, std::vector<sim::MCTrack> fRelTracks, std::vect
               for(size_t sh=0; sh<fRelShowers.size();sh++){
                 auto const& mcshower = fRelShowers.at(sh);
                 if(mcshower.PdgCode()==22){
-                  if(mcshower.dEdx()<1.6){
+                  if(mcshower.dEdx()<fdEdx && mcshower.dEdx()!=0){
                     hists[1]->Fill(mctruth.GetNeutrino().Nu().E(),1);
                     fig11[4]->Fill(FindRecoEnergy_nue(mcshower),1);
                   }
@@ -674,14 +741,30 @@ void NueSelection::Finalize() {
   WriteHists(dEdx_gamma, dEdx_gammastack);
 
   WriteHists(fCut3, cut3stack);
+
+  //Normalize fig11 to events/GeV
+  for(size_t i=0;i<fig11.size();i++){
+    auto hist = fig11.at(i);
+    for(int j=0; j<hist->GetNbinsX();j++){
+      auto val = hist->GetBinContent(j);
+      val /= hist->GetBinWidth(j);
+    }
+  }
   WriteHists(fig11, fig11stack);
   dEdx->Write();
   WriteHists(dEdx_2, dEdx_2_stack);
   std::cout << "config param fdEdx = " << fdEdx << std::endl;
+  /*
   std::cout << "Photon shower processes: " << std::endl;
   for(size_t i=0;i<gammaprocess.size();i++){
     std::cout << gammaprocess[i] << std::endl;
   }
+  
+  std::cout << "Neutrino parents: " << std::endl;
+  for(size_t i=0;i<parentcodes.size();i++){
+    std::cout << parentcodes[i] << std::endl;
+  }
+  */  
 }
 
 bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Interaction>& reco) {
@@ -701,7 +784,7 @@ bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Int
   auto const& mcshowers = \
     *ev.getValidHandle<std::vector<sim::MCShower>>(fShowerTag);
 
-  gammaprocess = UniqueGammaProcess(gammaprocess, mcshowers);
+  //gammaprocess = UniqueGammaProcess(gammaprocess, mcshowers);
 
   // Iterate through the neutrinos
   for (size_t i=0; i<mctruths.size(); i++) {
@@ -709,19 +792,17 @@ bool NueSelection::ProcessEvent(const gallery::Event& ev, std::vector<Event::Int
     auto const& mctruth = mctruths.at(i);
     auto const& mcflux = mcfluxes.at(i);
     const simb::MCNeutrino& nu = mctruth.GetNeutrino();
-    auto nuenergy = nu.Nu().E();
-    auto nuVertex = nu.Nu().EndPosition();
-    auto nuPdg = nu.Nu().PdgCode();
-    auto ccnc = nu.CCNC();
-    if (ccnc == simb::kCC && nu.Mode() == 0 && nuPdg == 12) {
+    if (nu.CCNC() == simb::kCC && nu.Mode() == 0 && nu.Nu().PdgCode() == 12) {
       Event::Interaction interaction = TruthReco(mctruth);
       reco.push_back(interaction);
     }
 
-    fRelTracks = FindRelevantTracks(nuVertex, mctracks);
-    fRelShowers = FindRelevantShowers(nuVertex, mcshowers);
+    //parentcodes = UniqueParents(parentcodes, mcflux);
+
+    fRelTracks = FindRelevantTracks(nu.Nu().EndPosition(), mctracks);
+    fRelShowers = FindRelevantShowers(nu.Nu().EndPosition(), mcshowers);
   
-    Cut1(mctruth, fRelTracks, fRelShowers, fCut1, rng);
+    //Cut1(mctruth, fRelTracks, fRelShowers, fCut1, rng);
     Cut1_reco(mcflux, mctruth, mcshowers, fCut1_reco, fig11, rng);
     Cut2(nu, fRelTracks, fRelShowers, fCut2, fig11, rng);
     Cut3(mctruth, fRelTracks, fRelShowers, fCut3, fig11, rng);

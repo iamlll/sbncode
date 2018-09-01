@@ -71,6 +71,7 @@ protected:
 
   /** vectors */
   std::vector<std::string> gammaprocess; //!< vector of photon shower processes
+  std::vector<int> parentcodes; //!< vector of neutrino parent PDG codes
   std::vector<sim::MCTrack> fRelTracks; //MCTracks within 5 cm of neutrino interaction vertex
   std::vector<sim::MCShower> fRelShowers; //MCShowers within 5 cm of neutrino interaction vertex
 
