@@ -128,31 +128,6 @@ std::vector<TH1D*> InitializeHists(int nbins, double lowX, double highX, int siz
 }
 
 /**
- * Initializes a vector of 1-D histograms (variable binning) containing doubles.
- *
- * \param nbins the number of bins
- * \param xbins an array of size [nbins+1] containing the locations of the desired bins.
- * \param size how many histograms the vector will contain
- * \param baseTitle the name to be given to each histogram
- * \param rng A random number generator
- * \param fill True will give each histogram fill colors, False gives each line colors
- * \return a vector of 1-D histograms
- */
-std::vector<TH1D*> InitializeHists_varbins(int nbins, std::vector<double> xbins, int size, std::string baseTitle, std::mt19937 rng, bool fill){
-   std::vector<TH1D*> hists;
-   double* binarray = &xbins[0];
-   char buffer[20];
-   for(int i=0;i<size;i++){
-      char* cstr = new char [baseTitle.length()+1];
-      std::strcpy (cstr, baseTitle.c_str());
-      std::sprintf(buffer, "%s%d", cstr, i); 
-      hists.push_back(new TH1D(buffer,"",nbins,binarray));
-   }
-   //hists = ColorFill(hists, rng, fill);
-   return hists;
-}
-
-/**
  * Add a vector of histograms to a stacked histogram, and write the stack to an output file.
  *
  * \param vec A vector of 1-D histograms
@@ -202,15 +177,18 @@ void NueSelection::Initialize(Json::Value* config) {
   fCut3 = InitializeHists(30,0,5,2,"#nu_mu CC", rng, true);
   cut3stack = new THStack("cut3stack","CC #nu_#mu;E_#nu (GeV);count");
 
-
-  fig11 = InitializeHists_varbins(11,{0.2,0.35,0.5,0.65,0.8,0.95,1.1,1.3,1.5,1.75,2,3}, 5,"thing", rng, true);
-  fig11[0]->SetFillColor(kGreen+3);
-  fig11[1]->SetFillColor(kGreen+2);
-  fig11[2]->SetFillColor(kGreen-7);
-  fig11[3]->SetFillColor(kOrange+1);
-  fig11[4]->SetFillColor(kBlue-9);
+  fig11 = InitializeHists(11,0,3,5,"thing",rng,true);
+  std::vector<double> binvec = {0.2,0.35,0.5,0.65,0.8,0.95,1.1,1.3,1.5,1.75,2,3};
+  double* binarray = &binvec[0]; 
+  for(size_t n=0; n<fig11.size();n++){
+    fig11[n]->SetBins(11, binarray);
+    if(n==0) fig11[n]->SetFillColor(kGreen+3);
+    else if(n==1) fig11[n]->SetFillColor(kGreen+2);
+    else if(n==2) fig11[n]->SetFillColor(kGreen-7);
+    else if(n==3) fig11[n]->SetFillColor(kOrange+1);
+    else if(n==4) fig11[n]->SetFillColor(kBlue-9);
+  }
   fig11stack = new THStack("fig11stack",";Reconstructed Energy (GeV);Events/GeV");
-
 
   dEdx = new TH1D("dEdx","Shower dE/dx;dE/dx (MeV/cm);particle count", 30, 0, 5);
   dEdx_2 = InitializeHists(30,0,5,2,"particle",rng, true);
