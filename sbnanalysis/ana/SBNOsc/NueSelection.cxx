@@ -201,8 +201,8 @@ void NueSelection::Initialize(Json::Value* config) {
   prelimCuts = InitializeHists(30,0,5,5,"nu interactions",rng,false);
   prelim_stack_nue = new THStack("prelim_stack_nue",";E_#nu (GeV);count");
 
-  dist_from_vertex = new TH1D("dist_from_vertex","Shower/track dist. from #nu vertex;Distance (cm);count",50,0,0.1);
-  vertexDist_truth = InitializeHists(50,0,0.1,3,"nuegc",rng,true);
+  dist_from_vertex = new TH1D("dist_from_vertex","Shower/track dist. from #nu vertex;Distance (cm);count",25,0,1e-5);
+  vertexDist_truth = InitializeHists(15,0,1e-5,3,"nuegc",rng,true);
   truthVD_stack = new THStack("truthVD_stack","dist. from #nu vertex;dist(cm);count");
 
   nuE_vs_reco = new TH2D("nuE_vs_reco","truth v. reco E_#nu;E_#nu (GeV);Reconstructed E_#nu (GeV)", 12, 0,2,12,0,2); 
@@ -405,13 +405,15 @@ void DistFromNuVertex(simb::MCNeutrino nu, std::vector<sim::MCShower> mcshowers,
   for(size_t b=0; b<mcshowers.size();b++){
     auto mcshower = mcshowers.at(b);
     auto dist = FindDistance(mcshower.Start().Position(), nu.Nu().EndPosition());
-    if(dist <= 20 && dist !=0){
-      dist_from_vertex->Fill(dist, 1);
+    if(dist <= 5 && dist !=0){
       if(nu.Nu().PdgCode()==12 && nu.CCNC()==0 && mcshower.PdgCode()==11 && mcshower.Process()=="primary"){
         vertexDist_truth[0]->Fill(dist,1); //true nu_e CCNC
         if(dist < fMinDist_e) fMinDist_e = dist;
         if(fMaxDist_e < dist) fMaxDist_e = dist;
       }
+    }
+    if(dist <=20 && dist != 0){
+      dist_from_vertex->Fill(dist, 1);
       if(mcshower.PdgCode()==22){
         vertexDist_truth[1]->Fill(dist,1); //photons travel some distance away from neutrino vertex; distance has exponential distribution whose characteristic length is radiation length of the medium. For LAr, this characteristic length = 14 cm.
         if(dist < fMinDist_g) fMinDist_g = dist;

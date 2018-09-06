@@ -9,7 +9,7 @@ TLegend* CreateNamedLegend(string legTitle, THStack* stack, vector<string> title
   char* cstrLeg = new char[legTitle.length()+1];
   strcpy(cstrLeg, legTitle.c_str());
   int totalEntries = 0;
-  TLegend* leg = new TLegend(0.45,0.7,0.9,0.9,cstrLeg);
+  TLegend* leg = new TLegend(0.7,0.7,1,.9,cstrLeg);
   vector<int> successes;
   for(auto obj: *stack->GetHists()){
     TH1D* hist = (TH1D*) obj;
@@ -47,8 +47,8 @@ TLegend* CreateNamedLegend(string legTitle, THStack* stack, vector<string> title
 }  
 
 void nue_prelim(){
-  //TFile* nue = new TFile("output_SBNOsc_NueSelection.root");
-  TFile* nue = new TFile("prelimoutput.root");
+  TFile* nue = new TFile("output_SBNOsc_NueSelection.root");
+  //TFile* nue = new TFile("prelimoutput.root");
 
   THStack* shAssns = (THStack*)nue->Get("showerE_stack");
   TH2D* nue_vs_reco = (TH2D*)nue->Get("nuE_vs_reco");
@@ -75,7 +75,16 @@ void nue_prelim(){
   distcanv->cd(2);
   vertexDist_truth->Draw();
   CreateNamedLegend("",vertexDist_truth,{"true #nu_e CC tr+sh","photon showers","cosmic rays"},false)->Draw();
-   
+  //Fit the photon histogram with an exponential   
+  /*int num = 0;
+  for(auto obj : *nuereco_type_stack->GetHists()){
+    TH1D* hist = (TH1D*) obj;
+    if(num==1){
+      hist->Fit
+    }
+    num++;
+  }*/
+
   /*
   TCanvas *energycanv = new TCanvas("energycanv","energycanv",800,800);
   nue_vs_reco->Draw("colz");
