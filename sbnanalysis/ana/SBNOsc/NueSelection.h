@@ -91,6 +91,7 @@ protected:
   THStack* cut2b_stack;
   std::vector<TH1D*> pi2gamma; //ct vs photon shower energy
   THStack* gamma2Stack; 
+  TH1D* distgamma; //!< distances of primary photon showers and photon showers from primary pi0s from the neutrino interaction vertex
   std::vector<TH1D*> visiblevertex;
   THStack* vertexstack;
   std::vector<TH1D*> dEdx_gamma;

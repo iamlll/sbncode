@@ -169,10 +169,11 @@ void NueSelection::Initialize(Json::Value* config) {
   cut2b_stack = new THStack("cut2b_stack","conversion gap cut;E_#nu (GeV);count");
   pi2gamma = InitializeHists(30,0,500,6,"#gamma", rng, false);
   gamma2Stack = new THStack("2ndPhotonCut_stack", "Photon energies;E_#gamma (MeV);count");
-  visiblevertex = InitializeHists(30,0,500,3,"vertex", rng, true);
+  visiblevertex = InitializeHists(30,0,500,4,"vertex", rng, true);
   vertexstack = new THStack("visiblevertexstack","Visible vertex/conv. gap photons;#gamma shower energy (MeV);count"); 
   dEdx_gamma = InitializeHists(30,0,500,3,"gamma dEdx", rng, true);
   dEdx_gammastack = new THStack("gammastack","#gamma dE/dx cut (cut 2);#gamma shower energy (MeV);count");
+  distgamma = new TH1D("distgamma","#gamma distance from #nu vertex;distance from vertex (cm);count",18,0,0.00008);
 
   fCut3 = InitializeHists(30,0,5,2,"#nu_mu CC", rng, true);
   cut3stack = new THStack("cut3stack","CC #nu_#mu;E_#nu (GeV);count");
@@ -190,7 +191,7 @@ void NueSelection::Initialize(Json::Value* config) {
   }
   fig11stack = new THStack("fig11stack",";Reconstructed Energy (GeV);Events/GeV");
 
-  dEdx = new TH1D("dEdx","Shower dE/dx;dE/dx (MeV/cm);particle count", 30, 0, 5);
+  dEdx = new TH1D("dEdx","Shower dE/dx;dE/dx (MeV/cm);particle count", 36, -1, 5);
   dEdx_2 = InitializeHists(30,0,5,2,"particle",rng, true);
   dEdx_2_stack = new THStack("showerStack","Shower dE/dx;dE/dx(MeV/cm);count");
 
@@ -529,6 +530,16 @@ void Cut2(simb::MCNeutrino nu, std::vector<sim::MCTrack> fRelTracks, std::vector
       pi2gamma[0]->Fill(mcshower.Start().E(),1); //all photon showers w/in 5 cm
       visiblevertex[0]->Fill(mcshower.Start().E(),1);
       dEdx_gamma[0]->Fill(mcshower.Start().E(),1);
+     
+      auto dist = FindDistance(mcshower.Start().Position(), nuVertex);
+      if(mcshower.MotherPdgCode()==111 && mcshower.MotherProcess()=="primary"){
+        visiblevertex[1]->Fill(mcshower.Start().E(),1); 
+        if(dist!=0) distgamma->Fill(dist,1); 
+      }
+      else if(mcshower.Process()=="primary"){
+        visiblevertex[1]->Fill(mcshower.Start().E(),1);
+        if(dist!=0) distgamma->Fill(dist,1); 
+      }
     }
     
     //leading photon shower produced by pi0 must have E_gamma > 200 MeV; 2nd photon shower must have E_gamma > 100 MeV
@@ -545,7 +556,7 @@ void Cut2(simb::MCNeutrino nu, std::vector<sim::MCTrack> fRelTracks, std::vector
       else if(nKids==1){
         if(mcshower.MotherTrackID()==momID){
           pi2gamma[3]->Fill(mcshower.Start().E(),1); //# 2nd photon showers
-          if(count==1 && mcshower.Start().E() > 100){//if leading photon shower pass the energy cut
+          if(count==1 && mcshower.Start().E() > 100){//if leading photon shower passes the energy cut
             pi2gamma[4]->Fill(mcshower.Start().E(), 1); //#2nd g-kids that pass the energy cut
             count++;
             //if the second photon converts (showers) within the active TPC, reject the event!
@@ -583,10 +594,10 @@ void Cut2(simb::MCNeutrino nu, std::vector<sim::MCTrack> fRelTracks, std::vector
       
       //look at distances from neutrino vertex of primary photon showers and photons from pi0 decays (decay so promptly they are still in the struck nucleus)
       if((mcshower.PdgCode()==22 && mcshower.Process()=="primary") || (mcshower.PdgCode()==22 && mcshower.MotherPdgCode()==111 && mcshower.MotherProcess()=="primary")){
-        visiblevertex[1]->Fill(mcshower.Start().E(),1); //how many photon showers from event with visible vertex
+        visiblevertex[2]->Fill(mcshower.Start().E(),1); //how many photon showers from event with visible vertex
         nPhotonSh++;
         if(dist_from_vertex > 3){
-          visiblevertex[2]->Fill(mcshower.Start().E(),1); //how many photon showers converting more than 3 cm away from vertex
+          visiblevertex[3]->Fill(mcshower.Start().E(),1); //how many photon showers converting more than 3 cm away from vertex
           nfailed++;        
         } 
       } 
@@ -715,7 +726,8 @@ void NueSelection::Finalize() {
   WriteHists(cut2a, cut2a_stack);
   WriteHists(cut2b, cut2b_stack);
   WriteHists(pi2gamma, gamma2Stack);
-  WriteHists(visiblevertex, vertexstack);
+  WriteHists(visiblevertex, vertexstack); 
+  distgamma->Write();
   WriteHists(dEdx_gamma, dEdx_gammastack);
 
   WriteHists(fCut3, cut3stack);

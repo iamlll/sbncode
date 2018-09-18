@@ -61,12 +61,12 @@ void nue_cuts(){
   cut1reco->Draw("nostack");  
   CreateNamedLegend("Cut 1, reconstructed E_#nu", cut1reco, {"ev w/ 1+ matched E_sh > 200 MeV","\" which are prim. e- sh","empty"},false)->Draw();
 */
-  
+/*  
   THStack* fig11 = (THStack*)nue->Get("fig11stack");
   TCanvas* canv11 = new TCanvas("canv11", "canv11", 1000, 1000);
   fig11->Draw();
   CreateNamedLegend("", fig11, {"#mu->#nue","K+->#nue","K0->#nue","NC single #gamma", "#nu_mu CC"},false)->Draw();
-  
+*/  
 /*  
   THStack* cut2 = (THStack*)nue->Get("cut2stack");
   TCanvas* c2 = new TCanvas("c2","c2",800,800);
@@ -84,30 +84,35 @@ void nue_cuts(){
   THStack* cut2a = (THStack*)nue->Get("cut2a_stack");
   cut2a->Draw("nostack");
   CreateNamedLegend("2nd photon cut", cut2a, {"all #nu events","rejected events from 2nd photon cut"}, false)->Draw();
+*/
 
   TCanvas* canv2b = new TCanvas("canv2b","conversion gap cut canv", 1600,800);
   canv2b->Divide(2,1);
   canv2b->cd(1);
   THStack* visiblevertex = (THStack*)nue->Get("visiblevertexstack"); 
   visiblevertex->Draw("nostack");
-  CreateNamedLegend("conversion gap cut",visiblevertex,{"# w/in 5 cm", "# from visible vertex", "# converting >3 cm away from vertex"},false)->Draw();
+  CreateNamedLegend("conversion gap cut",visiblevertex,{"# w/in 5 cm", "primary #gamma or from primary #pi0","# from visible vertex", "# converting >3 cm away from vertex"},false)->Draw();
   canv2b->cd(2);
   THStack* cut2b = (THStack*)nue->Get("cut2b_stack");
   cut2b->Draw("nostack");
   CreateNamedLegend("Conversion gap cut", cut2b, {"All #nu events","visible #nu events","rejected from conversion gap cut"},false)->Draw();
+  TCanvas* distgcanv = new TCanvas("distgcanv","gamma dist canv",800,800);
+  TH1D* distgamma = (TH1D*)nue->Get("distgamma");
+  distgamma->Draw();
   
+/*  
   
   TCanvas* dEdxcanv_gamma = new TCanvas("dEdxcanv_gamma","gamma dEdx cut canv",800,800);
   THStack* dEdx_gamma = (THStack*)nue->Get("gammastack");
   dEdx_gamma->Draw("nostack");
   CreateNamedLegend("dEdx cut", dEdx_gamma, {"all #gamma showers w/in 5 cm","#gamma showers from unrejected #nu event","# #gamma showers passing dE/dx cut"}, false)->Draw();
 */
-  
+/*  
   THStack* cut3 = (THStack*)nue->Get("cut3stack");
   TCanvas* c3 = new TCanvas("c3","c3",800,800);
   cut3->Draw();
   CreateNamedLegend("CC #nu_#mu", cut3, {"Failed #mu","Passed #mu"},false)->Draw();
-  
+*/  
 /*  
   TH1D* dEdx = (TH1D*)nue->Get("dEdx");
   THStack* dEdx_stack = (THStack*)nue->Get("showerStack");
